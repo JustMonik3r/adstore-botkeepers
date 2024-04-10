@@ -3,16 +3,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Collection;
-
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+public class CreateOrUpdateCommentDto {
 
-public class Ads {
+    private Integer pk;
 
-    private Integer count;
+    private String text;
 
-    private Collection<Ad> results;
+    private LocalDateTime createdAt;
+
 }

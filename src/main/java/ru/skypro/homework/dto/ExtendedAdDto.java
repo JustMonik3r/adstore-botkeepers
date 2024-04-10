@@ -1,4 +1,4 @@
 package ru.skypro.homework.dto;
 
-public class Comment {
+public class ExtendedAdDto {
 }

@@ -3,15 +3,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
+
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateOrUpdateAd {
 
-    private String title;
+public class AdsDto {
 
-    private Integer price;
+    private Integer count;
 
-    private String description;
-
+    private Collection<AdDto> results;
 }

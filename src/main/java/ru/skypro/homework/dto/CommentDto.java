@@ -1,4 +1,4 @@
 package ru.skypro.homework.dto;
 
-public class User {
+public class CommentDto {
 }
