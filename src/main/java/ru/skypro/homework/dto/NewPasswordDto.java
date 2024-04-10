@@ -3,17 +3,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateOrUpdateCommentDto {
+public class NewPasswordDto {
 
-    private Integer pk;
+    private String currentPassword;
 
-    private String text;
-
-    private LocalDateTime createdAt;
+    private String newPassword;
 
 }
