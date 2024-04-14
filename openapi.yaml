@@ -15,7 +15,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewPassword'
+              $ref: '#/components/schemas/NewPasswordDto'
       responses:
         '200':
           description: OK
@@ -405,7 +405,7 @@ paths:
 
 components:
   schemas:
-    NewPassword:
+    NewPasswordDto:
       type: object
       properties:
         currentPassword:
@@ -413,7 +413,7 @@ components:
           description: 'текущий пароль'
           minLength: 8
           maxLength: 16
-        newPassword:
+        NewPasswordDto:
           type: string
           description: 'новый пароль'
           minLength: 8

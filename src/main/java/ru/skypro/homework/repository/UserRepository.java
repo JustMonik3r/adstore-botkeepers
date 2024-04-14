@@ -1,4 +1,7 @@
 package ru.skypro.homework.repository;
 
-public class UserRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import ru.skypro.homework.entity.User;
+
+public interface UserRepository extends JpaRepository<User, Long> {
 }

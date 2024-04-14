@@ -1,7 +1,7 @@
 package ru.skypro.homework.entity;
 
 import lombok.Data;
-import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.dto.RoleDto;
 
 import javax.persistence.*;
 
@@ -17,7 +17,7 @@ public class User {
     private String lastName;
     private String phone;
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private RoleDto role;
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Avatar avatar;
 }

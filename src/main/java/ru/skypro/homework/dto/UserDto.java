@@ -12,6 +12,6 @@ public class UserDto {
     private String lastName;
     private String phone;
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private RoleDto role;
     private String image;
 }

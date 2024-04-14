@@ -10,6 +10,6 @@ public class NewPasswordDto {
 
     private String currentPassword;
 
-    private String newPassword;
+    private String newPasswordDto;
 
 }
