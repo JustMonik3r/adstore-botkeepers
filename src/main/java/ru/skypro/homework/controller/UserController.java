@@ -1,6 +1,6 @@
 package ru.skypro.homework.controller;
 
-import lombok.RequiredArgsConstructor;
+//import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,15 +19,20 @@ import java.io.IOException;
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     @PostMapping("/set_password")
-    public ResponseEntity<NewPassword> setPassword(@RequestBody NewPassword newPassword, Authentication authentication) {
-        NewPassword resultPassword = userService.changePassword(newPassword,authentication);
-        return ResponseEntity.ok(resultPassword);
+    public ResponseEntity<Void> setPassword(@RequestBody NewPassword newPassword, Authentication authentication) {
+
+        userService.changePassword(newPassword,authentication);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/me")
@@ -47,7 +52,7 @@ public class UserController {
 
 
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> updateImage (Authentication authentication, @RequestParam MultipartFile image) throws IOException {
+    public ResponseEntity<Void> updateImage (Authentication authentication, @RequestParam MultipartFile image) throws IOException {
         userService.updateImage(authentication, image);
         return ResponseEntity.ok().build();
     }
