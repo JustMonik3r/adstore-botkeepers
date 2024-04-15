@@ -23,9 +23,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
-    private final CommentMapper commentMapper;
-    /*private final UserRepository userRepository;
-    private final AdRepository adRepository;*/
+    //private final CommentMapper commentMapper;
+    private final UserRepository userRepository;
+    private final AdRepository adRepository;
 
     /**
      * Получает комментарии к объявлению.
@@ -33,43 +33,46 @@ public class CommentServiceImpl implements CommentService {
      * @return Объект CommentsDto, содержащий список комментариев.
      */
     public CommentsDto getComments(Integer id) {
-        List<Comment> comment = commentRepository.findByAdPk(id);
-        if(comment == null) {
-            return null;
-        }
-        List<CommentDto> commentList = comment.stream()
-                .map(commentMapper::commentToCommentDto)
-                .collect(Collectors.toList());
-        return new CommentsDto(commentList.size(), commentList);
+//        List<Comment> comment = commentRepository.findByAdPk(id);
+//        if(comment == null) {
+//            return null;
+//        }
+//        List<CommentDto> commentList = comment.stream()
+//                .map(commentMapper::commentToCommentDto)
+//                .collect(Collectors.toList());
+//        return new CommentsDto(commentList.size(), commentList);
+        return null;
     }
 
     public CommentDto createComment(Integer id,
                                     CreateOrUpdateCommentDto createCommentDto){
-        Timestamp localDateTime = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
-        Comment comment = new Comment();
-        Ad ad = adRepository.findAdByPk(id);
-        if(ad == null) {
-            return null;
-        }
-        comment.setText(createCommentDto.getText());
-        comment.setCreatedAt(localDateTime);
-        comment.setAd(ad);
-        commentRepository.save(comment);
-        return commentMapper.commentToCommentDto(comment);
+//        Timestamp localDateTime = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
+//        Comment comment = new Comment();
+//        Ad ad = adRepository.findAdByPk(id);
+//        if(ad == null) {
+//            return null;
+//        }
+//        comment.setText(createCommentDto.getText());
+//        comment.setCreatedAt(localDateTime);
+//        comment.setAd(ad);
+//        commentRepository.save(comment);
+//        return commentMapper.commentToCommentDto(comment);
+        return null;
     }
 
     public void deleteComment(Integer adId, Integer commentId) {
-        Comment comment = commentRepository.findById(commentId);
-        commentRepository.delete(comment);
+//        Comment comment = commentRepository.findById(commentId);
+//        commentRepository.delete(comment);
     }
 
     public CommentDto updateComment (Integer adId, Integer commentId,CreateOrUpdateCommentDto updateCommentDto){
-        Comment comment = commentRepository.findById(commentId);
-        if (comment != null) {
-            comment.setText(updateCommentDto.getText());
-            commentRepository.save(comment);
-            return commentMapper.commentToCommentDto(comment);
-        }
+//        Comment comment = commentRepository.findById(commentId);
+//        if (comment != null) {
+//            comment.setText(updateCommentDto.getText());
+//            commentRepository.save(comment);
+//            return commentMapper.commentToCommentDto(comment);
+//        }
+//        return null;
         return null;
     }
 }

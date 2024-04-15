@@ -10,7 +10,7 @@ import ru.skypro.homework.entity.User;
 public interface UserService {
 
 
-    NewPasswordDto changePassword(NewPasswordDto newPasswordDto, Authentication authentication);
+    void changePassword(NewPasswordDto newPasswordDto, Authentication authentication);
 
     UserDto getMe(Authentication authentication);
 
