@@ -8,9 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.NewPassword;
-import ru.skypro.homework.dto.UpdateUser;
+import ru.skypro.homework.dto.NewPasswordDto;
+import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.service.AuthService;
 import ru.skypro.homework.service.UserService;
 
 import java.io.IOException;
@@ -24,10 +25,11 @@ import java.io.IOException;
 public class UserController {
     private final UserService userService;
 
+
     @PostMapping("/set_password")
-    public ResponseEntity<NewPassword> setPassword(@RequestBody NewPassword newPassword, Authentication authentication) {
-        NewPassword resultPassword = userService.changePassword(newPassword,authentication);
-        return ResponseEntity.ok(resultPassword);
+    public ResponseEntity<Void> setPassword(@RequestBody NewPasswordDto newPasswordDto, Authentication authentication) {
+        userService.changePassword(newPasswordDto,authentication);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/me")
@@ -37,8 +39,8 @@ public class UserController {
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<UpdateUser> updateUser(@RequestBody UpdateUser updateUser, Authentication authentication) {
-        UpdateUser foundUpdateUser = userService.updateUser(updateUser,authentication);
+    public ResponseEntity<UpdateUserDto> updateUser(@RequestBody UpdateUserDto updateUserDto, Authentication authentication) {
+        UpdateUserDto foundUpdateUser = userService.updateUser(updateUserDto,authentication);
         if (foundUpdateUser == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
