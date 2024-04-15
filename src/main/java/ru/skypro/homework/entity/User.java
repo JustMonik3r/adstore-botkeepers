@@ -12,7 +12,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private Integer id;
     @Column(name = "email")
     private String email;
     @Column(name = "firstName")
@@ -28,4 +28,7 @@ public class User {
 //    private Avatar avatar;
     @Column(name = "password")
     private String password;
+    @ManyToOne
+    @JoinColumn(name = "image_id")
+    private Image images;
 }
