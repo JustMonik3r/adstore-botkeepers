@@ -20,7 +20,7 @@ import ru.skypro.homework.service.mappers.UserMapper;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    //private final UserMapper userMapper;
+    private final UserMapper userMapper;
 
 
     @Override
@@ -32,24 +32,21 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new UserIllegalArgumentException("Пользователь вводит неверный текущий пароль");
         }
-
     }
 
     @Override
     public UserDto getMe(Authentication authentication) {
-        //return userRepository.findByEmail(authentication.getName()).map(userMapper::userToUserDto).orElseThrow();
-        return null;
+        return userRepository.findByEmail(authentication.getName()).map(userMapper::userToUserDto).orElseThrow();
     }
 
     @Override
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto, Authentication authentication) {
-//        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
-//        user.setFirstName(updateUserDto.getFirstName());
-//        user.setLastName(updateUserDto.getLastName());
-//        user.setPhone(updateUserDto.getPhone());
-//        userRepository.save(user);
-//        return userMapper.updateUserToDto(user);
-        return null;
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        user.setFirstName(updateUserDto.getFirstName());
+        user.setLastName(updateUserDto.getLastName());
+        user.setPhone(updateUserDto.getPhone());
+        userRepository.save(user);
+        return userMapper.updateUserToDto(user);
     }
 
     @Override
