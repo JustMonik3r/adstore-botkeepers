@@ -7,6 +7,8 @@ import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.entity.User;
 
+import java.io.IOException;
+
 public interface UserService {
 
 
@@ -16,5 +18,5 @@ public interface UserService {
 
     UpdateUserDto updateUser(UpdateUserDto updateUserDto, Authentication authentication);
 
-    void updateImage(Authentication authentication, MultipartFile image);
+    void updateImage(Authentication authentication, MultipartFile file) throws IOException;
 }

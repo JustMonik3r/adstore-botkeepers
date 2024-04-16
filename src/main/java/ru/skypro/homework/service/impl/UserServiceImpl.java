@@ -8,19 +8,29 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
 import ru.skypro.homework.exceptions.UserIllegalArgumentException;
+import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
 import ru.skypro.homework.service.mappers.UserMapper;
 
-@Slf4j
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
+
+
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    //private final UserMapper userMapper;
+    private final UserMapper userMapper;
+    private final ImageRepository imageRepository;
+
 
 
     @Override
@@ -32,28 +42,46 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new UserIllegalArgumentException("Пользователь вводит неверный текущий пароль");
         }
-
     }
 
     @Override
     public UserDto getMe(Authentication authentication) {
-        //return userRepository.findByEmail(authentication.getName()).map(userMapper::userToUserDto).orElseThrow();
-        return null;
+        return userRepository.findByEmail(authentication.getName()).map(userMapper::userToUserDto).orElseThrow();
     }
 
     @Override
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto, Authentication authentication) {
-//        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
-//        user.setFirstName(updateUserDto.getFirstName());
-//        user.setLastName(updateUserDto.getLastName());
-//        user.setPhone(updateUserDto.getPhone());
-//        userRepository.save(user);
-//        return userMapper.updateUserToDto(user);
-        return null;
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        user.setFirstName(updateUserDto.getFirstName());
+        user.setLastName(updateUserDto.getLastName());
+        user.setPhone(updateUserDto.getPhone());
+        userRepository.save(user);
+        return userMapper.updateUserToDto(user);
     }
 
     @Override
-    public void updateImage(Authentication authentication, MultipartFile image) {
+    public void updateImage(Authentication authentication, MultipartFile file) throws IOException {
 
+        User users = userRepository.findByEmail(authentication.getName()).get();
+        Path filePath = Path.of("./image", authentication.getName());
+        Files.createDirectories(filePath.getParent());
+        Files.deleteIfExists(filePath);
+        try (
+                InputStream is = file.getInputStream();
+                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+                BufferedInputStream bis = new BufferedInputStream(is, 1024);
+                BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+        ) {
+            bis.transferTo(bos);
+        }
+        Image image = imageRepository.findById(users.getId()).orElseGet(Image::new);
+        image.setFileSize(file.getSize());
+        image.setMediaType(file.getContentType());
+        image.setData(file.getBytes());
+        imageRepository.save(image);
+
+        users.setImages(image);
+        userRepository.save(users);
     }
+
 }
