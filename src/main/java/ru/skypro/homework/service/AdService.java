@@ -10,17 +10,17 @@ import ru.skypro.homework.dto.ExtendedAdDto;
 import java.io.IOException;
 
 public interface AdService {
-    AdDto createAd(CreateOrUpdateAdDto adDto, MultipartFile image, Authentication authentication) throws IOException;
+    AdDto createAd (CreateOrUpdateAdDto adDto, MultipartFile image, Authentication authentication) throws IOException;
 
-    AdsDto getMyAds(Authentication authentication);
+    AdsDto getMyAds (Authentication authentication);
 
-    AdDto updateAds(Integer id, CreateOrUpdateAdDto createOrUpdateAdDto);
+    AdDto updateAds (Integer id, CreateOrUpdateAdDto createOrUpdateAdDto);
 
-    void deleteAd(Integer id, Authentication authentication);
+    void deleteAd (Integer id, Authentication authentication);
 
-    ExtendedAdDto findExtendedAd(Integer id);
+    ExtendedAdDto findExtendedAd (Integer id);
 
-    byte[]updateImageAd(Integer id, MultipartFile image) throws IOException;
+    byte[]updateImageAd (Integer id, MultipartFile image) throws IOException;
 
-    byte[] getImage(Integer imageId) throws IOException;
+    byte[] getImage (Integer imageId) throws IOException;
 }
