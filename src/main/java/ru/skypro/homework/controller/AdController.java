@@ -10,112 +10,79 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.AdDto;
-import ru.skypro.homework.dto.AdsDto;
-import ru.skypro.homework.dto.CreateOrUpdateAdDto;
-import ru.skypro.homework.dto.ExtendedAdDto;
+import ru.skypro.homework.dto.*;
+import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.service.impl.AdServiceImpl;
+import ru.skypro.homework.service.impl.CommentServiceImpl;
 
 import java.io.IOException;
+import java.util.Optional;
 
-@RestController
-@CrossOrigin(value = "http://localhost:3000")
 @Slf4j
+@CrossOrigin(value = "http://localhost:3000")
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/ads")
 public class AdController {
     private final AdServiceImpl adService;
-    private final AdRepository adRepository;
+    private final CommentServiceImpl commentService;
 
-    @Operation(summary = "Получение всех объявлений")
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdDto> getAllAds() {
-        return ResponseEntity.ok(adService.getAllAds());
+    @GetMapping
+    public ResponseEntity<AdsDto> getAllAds() {
+        AdsDto ads = adService.getAllAds();
+        return ResponseEntity.ok(ads);
     }
 
-    @Operation(summary = "Добавление объявления")
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdDto> addAd(@RequestPart("properties") CreateOrUpdateAdDto createAds,
-                                       @RequestPart("image") MultipartFile image,
-                                       Authentication authentication) throws IOException {
-        if (authentication.getName() != null) {
-            adService.createAd(createAds, image, authentication);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<CreateOrUpdateAdDto> addAd(Authentication authentication, @RequestPart(value = "properties", required = true) CreateOrUpdateAdDto properties,
+                                           @RequestPart(value = "image", required = true) MultipartFile image) throws IOException {
+        CreateOrUpdateAdDto createAd = adService.createAd(authentication,properties, image);
+        return ResponseEntity.ok(createAd);
     }
 
-    @Operation(summary = "Получение информации об объявлении")
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ExtendedAdDto> getAds(@PathVariable("id") Integer id, Authentication authentication) {
-        if (authentication == null || authentication.getName() == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        if (adService.findExtendedAd(id) == null) {
+    @GetMapping("{id}")
+    public ResponseEntity<ExtendedAdDto> getInfoExtendedAdById(@PathVariable Integer id) {
+        ExtendedAdDto extendedAd = adService.getAdById(id);
+        if (extendedAd == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } else {
-            return ResponseEntity.ok(adService.findExtendedAd(id));
         }
+        return ResponseEntity.ok(extendedAd);
     }
 
-    @Operation(summary = "Удаление объявления")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removeAd(@PathVariable Integer id, Authentication authentication) {
-        if (authentication == null || authentication.getName() == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    @DeleteMapping("{id}")
+    public ResponseEntity<AdDto> deleteAdById(@PathVariable Integer id) {
+        Optional<Ad> ad = adService.findOne(id);
+        if (ad == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
-        String userEmail = adRepository.findAdByPk(id).getUser().getEmail();
-        ExtendedAdDto foundAd = adService.findExtendedAd(id);
-
-        adService.deleteAd(id, authentication);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        adService.deleteAdById(id);
+        return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Обновление информации об объявлении")
-    @PatchMapping("/{id}")
-    public ResponseEntity<AdDto> updateAds(@PathVariable Integer id,
-                                           @RequestBody CreateOrUpdateAdDto createOrUpdateAdDto,
-                                           Authentication authentication) {
-        if (authentication == null || authentication.getName() == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    @PatchMapping("{id}")
+    public ResponseEntity<CreateOrUpdateAdDto> updateAdById(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto updateAd) {
+        CreateOrUpdateAdDto foundAd = adService.updateAdById(id, updateAd);
+        if (foundAd == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-
-        String userEmail = adRepository.findAdByPk(id).getUser().getEmail();
-        ExtendedAdDto foundAd = adService.findExtendedAd(id);
-
-        adService.updateAds(id, createOrUpdateAdDto);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.ok(foundAd);
     }
 
-    @Operation(summary = "Получение объявления пользователя")
-    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AdsDto> getAdsMe(Authentication authentication) {
-        if (authentication.getName() != null) {
-            return new ResponseEntity<>(adService.getMyAds(authentication), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+    @GetMapping("/me")
+    public ResponseEntity<AdsDto> getMyAds (Authentication authentication) {
+        AdsDto ads = adService.getMyAds(authentication);
+        return ResponseEntity.ok(ads);
     }
 
-    @Operation(summary = "Обновление картинки объявления")
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<byte[]> updateImage(@PathVariable Integer id,
-                                              @RequestParam MultipartFile image,
-                                              Authentication authentication) throws IOException {
-        String userEmail = adRepository.findAdByPk(id).getUser().getEmail();
-        if (authentication.getName() == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        if (adService.updateImageAd(id, image) == null) {
+    public ResponseEntity<Ad> updateImage(@PathVariable Integer id, @RequestParam MultipartFile image) throws
+            IOException {
+        Optional<Ad> adEntity = adService.findOne(id);
+        if (adEntity == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } else {
-            return ResponseEntity.ok(adService.updateImageAd(id, image));
         }
+        adService.updateImage(id, image);
+        return ResponseEntity.ok().build();
     }
 }

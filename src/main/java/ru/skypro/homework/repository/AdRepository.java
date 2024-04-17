@@ -6,11 +6,9 @@ import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.entity.Ad;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AdRepository extends JpaRepository<Ad, Integer> {
-    List<AdDto> findByUserId(Integer id);
-
-    Ad findAdByPk(int id);
-
+    Optional<Ad> findByUsersId(Integer id);
 }
