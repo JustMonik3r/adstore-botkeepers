@@ -11,18 +11,18 @@ import java.io.IOException;
 
 public interface AdService {
 
-    AdDto createAd (CreateOrUpdateAdDto adDto, MultipartFile image, Authentication authentication) throws IOException;
+    CreateOrUpdateAdDto createAd(Authentication authentication, CreateOrUpdateAdDto createAd, MultipartFile file) throws IOException;
 
-    AdsDto getMyAds (Authentication authentication);
+    ExtendedAdDto getAdById(Integer id);
 
-    AdDto updateAds (Integer id, CreateOrUpdateAdDto createOrUpdateAdDto);
+    void deleteAdById(Integer id);
 
-    void deleteAd (Integer id, Authentication authentication);
+    CreateOrUpdateAdDto updateAdById(Integer id, CreateOrUpdateAdDto updateAd);
 
-    ExtendedAdDto findExtendedAd (Integer id);
+    AdsDto getMyAds(Authentication authentication);
 
-    byte[]updateImageAd (Integer id, MultipartFile image) throws IOException;
+    void updateImage(Integer adId, MultipartFile file) throws IOException;
 
-    byte[] getImage (Integer imageId) throws IOException;
+    //byte[] getImage (Integer imageId) throws IOException;
   
 }
