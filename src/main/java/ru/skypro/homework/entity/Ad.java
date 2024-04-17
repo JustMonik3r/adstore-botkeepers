@@ -6,35 +6,37 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
-@Entity
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ads")
+@NoArgsConstructor
+@Entity(name = "ads")
 public class Ad {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer pk;
+    @Column(name = "id")
+    private Integer id;
 
-    @Column(name = "title", nullable = false)
-    private String title;
+    @ManyToOne
+    @JoinColumn(name = "users_id")
+    private User users;
 
-    @Column(name = "description", nullable = false)
-    private String description;
+    @OneToMany(mappedBy = "ads")
+    private List<Comment> comments;
 
-    @Column(name = "price", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "image_id")
+    private Image images;
+
+    @Column(name = "price")
     private Integer price;
 
-    @Column(name = "image")
-    private String imageUrl;
+    @Column(name = "title")
+    private String title;
 
-    @Column(name = "data")
-    @Lob
-    @Type(type = "org.hibernate.type.BinaryType")
-    private byte[] data;
+    @Column(name = "description")
+    private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
 }

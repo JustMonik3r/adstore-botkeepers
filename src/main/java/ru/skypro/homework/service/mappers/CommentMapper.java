@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.entity.Comment;
 
-@Component
+//@Component
 public interface CommentMapper {
     /*static Comment commentDtoToComment(CommentDto commentDto) {
         Comment comment = new Comment();
