@@ -6,8 +6,10 @@ import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.AdsDto;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
+import ru.skypro.homework.entity.Ad;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public interface AdService {
 
@@ -22,6 +24,7 @@ public interface AdService {
     AdsDto getMyAds(Authentication authentication);
 
     void updateImage(Integer adId, MultipartFile file) throws IOException;
+     Optional<Ad> findOne(Integer id);
 
     //byte[] getImage (Integer imageId) throws IOException;
   
