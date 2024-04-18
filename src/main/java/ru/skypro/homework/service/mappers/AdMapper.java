@@ -14,7 +14,7 @@ public interface AdMapper {
     @Mapping(target = "author",expression = "java(ad.getUsers().getId())")
     AdDto adsToDto(Ad ad);
 
-    ExtendedAdDto extendAdToDto(Ad adEntity);
+    ExtendedAdDto extendAdToDto(Ad ad);
 
     CreateOrUpdateAdDto updateAdToDto(Ad ad);
 }
