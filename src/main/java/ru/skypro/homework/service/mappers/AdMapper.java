@@ -10,11 +10,11 @@ import ru.skypro.homework.entity.Ad;
 @Mapper(componentModel = "spring")
 public interface AdMapper {
 
-    @Mapping(target = "pk",source = "adEntity.id")
-    @Mapping(target = "author",expression = "java(adEntity.getUsers().getId())")
+    @Mapping(target = "pk",source = "ad.id")
+    @Mapping(target = "author",expression = "java(ad.getUsers().getId())")
     AdDto adsToDto(Ad ad);
 
-    ExtendedAdDto extendAdToDto(Ad adEntity);
+    ExtendedAdDto extendAdToDto(Ad ad);
 
     CreateOrUpdateAdDto updateAdToDto(Ad ad);
 }
