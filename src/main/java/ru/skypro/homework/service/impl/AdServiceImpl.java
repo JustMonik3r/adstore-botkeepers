@@ -39,8 +39,6 @@ public class AdServiceImpl implements AdService {
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
 
-    //@Value("${image.dir.path}")
-    //private String imagesDir;
 
     private String objectAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
