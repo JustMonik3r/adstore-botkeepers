@@ -23,7 +23,7 @@ public class Ad {
     @JoinColumn(name = "author_id")
     private User author;
 
-    @OneToMany(mappedBy = "ad_comments")
+    @OneToMany(mappedBy = "ad")
     private List<Comment> comments;
 
     @ManyToOne
