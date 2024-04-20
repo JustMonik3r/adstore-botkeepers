@@ -14,6 +14,8 @@ import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
+import ru.skypro.homework.exceptions.AdNotFoundException;
+import ru.skypro.homework.exceptions.UserNotFoundException;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
@@ -53,12 +55,12 @@ public class AdServiceImpl implements AdService {
 
     //    Добавление объявления
     public CreateOrUpdateAdDto createAd(Authentication authentication, CreateOrUpdateAdDto createAd, MultipartFile file) throws IOException {
-        User user = userRepository.findByEmail(authentication.getName()).get();
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
         Ad ad = new Ad();
         ad.setTitle(createAd.getTitle());
         ad.setPrice(createAd.getPrice());
         ad.setDescription(createAd.getDescription());
-        ad.setUsers(user);
+        ad.setAuthor(user);
         adRepository.save(ad);
 
         Path filePath = Path.of("./image",  "." + getExtension(file.getOriginalFilename()));
@@ -71,7 +73,8 @@ public class AdServiceImpl implements AdService {
         ) {
             bis.transferTo(bos);
         }
-        Image image = imageRepository.findById(ad.getId()).orElseGet(Image::new);
+        Image image = new Image();
+        imageRepository.findById(image.getId()).orElseGet(Image::new);
         image.setFileSize(file.getSize());
         image.setMediaType(file.getContentType());
         image.setData(file.getBytes());
@@ -81,12 +84,11 @@ public class AdServiceImpl implements AdService {
         adRepository.save(ad);
         return adMapper.updateAdToDto(ad);
 
-
     }
 
     //Получение информации об объявлении
     public ExtendedAdDto getAdById(Integer id) {
-        return adRepository.findById(id).map(adMapper::extendAdToDto).orElse(null);
+        return adRepository.findById(id).map(adMapper::extendAdToDto).orElseThrow(() -> new AdNotFoundException("Объявление не найдено."));
     }
 
     //Удаление объявления
@@ -96,22 +98,22 @@ public class AdServiceImpl implements AdService {
 
     //Обновление информации об объявлении
     public CreateOrUpdateAdDto updateAdById(Integer id, CreateOrUpdateAdDto updateAd) {
-        Ad adEntity = adRepository.findById(id).get();
-        adEntity.setTitle(updateAd.getTitle());
-        adEntity.setPrice(updateAd.getPrice());
-        adEntity.setDescription(updateAd.getDescription());
-        adRepository.save(adEntity);
-        return adMapper.updateAdToDto(adEntity);
+        Ad ad = adRepository.findById(id).orElseThrow(() -> new AdNotFoundException("Объявление не найдено."));
+        ad.setTitle(updateAd.getTitle());
+        ad.setPrice(updateAd.getPrice());
+        ad.setDescription(updateAd.getDescription());
+        adRepository.save(ad);
+        return adMapper.updateAdToDto(ad);
     }
 
     //Получение объявлений авторизованного пользователь
     public AdsDto getMyAds(Authentication authentication) {
-        User userEntity = userRepository.findByEmail(authentication.getName()).get();
-        List<AdDto> collect = adRepository.findByUsersId(userEntity.getId()).stream().map(e -> {
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
+        List<AdDto> collect = adRepository.findByUsersId(user.getId()).stream().map(e -> {
             AdDto adDto = new AdDto();
-            adDto.setAuthor(e.getUsers().getId());
+            adDto.setAuthor(e.getAuthor().getId());
             adDto.setPk(e.getId());
-            adDto.setImage("http://localhost:3000/ads/" + e.getId() + "/image");
+            adDto.setImage(e.getId() + "/image");
             adDto.setTitle(e.getTitle());
             adDto.setPrice(e.getPrice());
             return adDto;
@@ -121,7 +123,7 @@ public class AdServiceImpl implements AdService {
 
     //     Обновление картинки объявления
     public void updateImage(Integer adId, MultipartFile file) throws IOException {
-        Ad ad = findAd(adId);
+        Ad ad = adRepository.findById(adId).orElseThrow(() -> new AdNotFoundException("Объявление не найдено."));
         Path filePath = Path.of("./image", adId + "." + getExtension(file.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
@@ -155,6 +157,6 @@ public class AdServiceImpl implements AdService {
 
     //находит объявление по идентификатору
     public Ad findAd(Integer id) {
-        return adRepository.findById(id).get();
+        return adRepository.findById(id).orElseThrow(() -> new AdNotFoundException("Объявление не найдено."));
     }
 }
