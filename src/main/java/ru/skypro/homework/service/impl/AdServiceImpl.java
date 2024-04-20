@@ -2,6 +2,7 @@ package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,6 +42,8 @@ public class AdServiceImpl implements AdService {
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
 
+    //@Value("${image.dir.path}")
+    //private String imagesDir;
 
     private String objectAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -109,7 +112,7 @@ public class AdServiceImpl implements AdService {
     //Получение объявлений авторизованного пользователь
     public AdsDto getMyAds(Authentication authentication) {
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
-        List<AdDto> collect = adRepository.findByUsersId(user.getId()).stream().map(e -> {
+        List<AdDto> collect = adRepository.findByAuthorId(user.getId()).stream().map(e -> {
             AdDto adDto = new AdDto();
             adDto.setAuthor(e.getAuthor().getId());
             adDto.setPk(e.getId());
