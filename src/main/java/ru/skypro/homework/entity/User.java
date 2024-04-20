@@ -28,7 +28,7 @@ public class User {
 //    private Avatar avatar;
     @Column(name = "password")
     private String password;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "image_id")
     private Image images;
 }
