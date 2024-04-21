@@ -36,6 +36,7 @@ public class AdServiceImpl implements AdService {
      Retrieves all ads.
      @return The DTO containing the list of all ads.
      */
+
     public AdsDto getAllAds() {
         List<AdDto> adList = adRepository.findAll().stream()
                 .map(AdMapper::adToAdDto)
