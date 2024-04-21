@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 public interface AdService {
+
     CreateOrUpdateAdDto createAd(Authentication authentication, CreateOrUpdateAdDto createAd, MultipartFile file) throws IOException;
 
     ExtendedAdDto getAdById(Integer id);

@@ -34,14 +34,14 @@ public class AdController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<CreateOrUpdateAdDto> addAd(Authentication authentication, @RequestPart(value = "properties", required = true) CreateOrUpdateAdDto properties,
+    ResponseEntity<CreateOrUpdateAdDto> createAd(Authentication authentication, @RequestPart(value = "properties", required = true) CreateOrUpdateAdDto properties,
                                            @RequestPart(value = "image", required = true) MultipartFile image) throws IOException {
         CreateOrUpdateAdDto createAd = adService.createAd(authentication,properties, image);
         return ResponseEntity.ok(createAd);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ExtendedAdDto> getInfoExtendedAdById(@PathVariable Integer id) {
+    public ResponseEntity<ExtendedAdDto> getAdById(@PathVariable Integer id) {
         ExtendedAdDto extendedAd = adService.getAdById(id);
         if (extendedAd == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
