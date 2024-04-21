@@ -1,7 +1,6 @@
 package ru.skypro.homework.dto;
 
 import lombok.Data;
-import ru.skypro.homework.entity.Avatar;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
