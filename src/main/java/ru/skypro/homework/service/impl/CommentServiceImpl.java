@@ -37,9 +37,10 @@ public class CommentServiceImpl implements CommentService {
      * @return Объект CommentsDto, содержащий список комментариев.
      */
     public CommentsDto getComments(Integer id) {
-        List<Comment> comments = adRepository.findById(id).get().getComments();
+        List<Comment> comments = commentRepository.findByAdPk(id);
         List<CommentDto> collect = comments.stream().map(e -> commentMapper.commentsToDto(e)).collect(Collectors.toList());
-        return new CommentsDto(collect.size(), collect);
+        CommentsDto commentsDto = new CommentsDto(collect.size(), collect);
+        return commentsDto;
     }
 
     public CreateOrUpdateCommentDto createComment(Integer id, CreateOrUpdateCommentDto createCommentDto, Authentication authentication){

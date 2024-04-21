@@ -39,8 +39,8 @@ public class UserController {
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<UpdateUserDto> updateUser(@RequestBody UpdateUserDto updateUserDto, Authentication authentication) {
-        UpdateUserDto foundUpdateUser = userService.updateUser(updateUserDto,authentication);
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, Authentication authentication) {
+        UserDto foundUpdateUser = userService.updateUser(userDto,authentication);
         if (foundUpdateUser == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -50,7 +50,7 @@ public class UserController {
 
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> updateImage (Authentication authentication, @RequestParam MultipartFile image) throws IOException {
-        userService.updateImage(authentication, image);
+        userService.updateAvatar(authentication, image);
         return ResponseEntity.ok().build();
     }
 }

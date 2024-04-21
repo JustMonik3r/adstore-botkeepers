@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
 
 import java.io.IOException;
@@ -16,7 +17,13 @@ public interface UserService {
 
     UserDto getMe(Authentication authentication);
 
-    UpdateUserDto updateUser(UpdateUserDto updateUserDto, Authentication authentication);
+    UserDto updateUser(UserDto userDto, Authentication authentication);
 
-    void updateImage(Authentication authentication, MultipartFile file) throws IOException;
+    UserDto findByEmail(String email);
+
+    void updateAvatar(Authentication authentication, MultipartFile image) throws IOException;
+
+    Image getImage(Integer id);
+
+    User getUser(String userName);
 }

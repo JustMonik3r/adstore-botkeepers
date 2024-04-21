@@ -10,8 +10,8 @@ import ru.skypro.homework.dto.AdsDto;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.service.mappers.AdMapper;
-//import ru.skypro.homework.service.mappers.CreateOrUpdateAdMapper;
-//import ru.skypro.homework.service.mappers.ExtendedAdMapper;
+import ru.skypro.homework.service.mappers.CreateOrUpdateAdMapper;
+import ru.skypro.homework.service.mappers.ExtendedAdMapper;
 import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.entity.User;
 import ru.skypro.homework.exceptions.AccessErrorException;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class AdServiceImpl implements AdService {
     private final AdRepository adRepository;
     private final UserService userService;
-    //private final CreateOrUpdateAdMapper createOrUpdateAdMapper;
+    private final CreateOrUpdateAdMapper createOrUpdateAdMapper;
 
     /**
      Retrieves all ads.
@@ -38,7 +38,7 @@ public class AdServiceImpl implements AdService {
      */
     public AdsDto getAllAds() {
         List<AdDto> adList = adRepository.findAll().stream()
-                .map(AdMapper::adsToDto)
+                .map(AdMapper::adToAdDto)
                 .collect(Collectors.toList());
         return new AdsDto(adList.size(), adList);
     }
@@ -93,7 +93,7 @@ public class AdServiceImpl implements AdService {
         ad.setPrice(createOrUpdateAdDto.getPrice());
         ad.setDescription(createOrUpdateAdDto.getDescription());
         adRepository.save(ad);
-        return AdMapper.adsToDto(ad);
+        return AdMapper.adToAdDto(ad);
     }
     /**
      Deletes an ad.
@@ -132,7 +132,7 @@ public class AdServiceImpl implements AdService {
      */
     @Override
     public byte[] updateImageAd(Integer id, MultipartFile image) throws IOException {
-        Ad ad = adRepository.findById(id).orElseThrow(AdNotFoundException::new);
+        Ad ad = adRepository.findById(id).orElseThrow(() -> new AdNotFoundException("Объявление не найдено."));
         ad.setData(image.getBytes());
         ad.setImageUrl("/images/" + ad.getPk());
         adRepository.save(ad);

@@ -12,6 +12,7 @@ import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 import ru.skypro.homework.entity.Ad;
+import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.service.AdService;
 import ru.skypro.homework.service.CommentService;
 
@@ -27,6 +28,7 @@ import java.util.Optional;
 public class CommentController {
     private CommentService commentService;
     private AdService adService;
+    private AdRepository adRepository;
 
 
     @Operation(summary = "Получение комментариев объявления")
@@ -41,7 +43,7 @@ public class CommentController {
 
     @Operation(summary = "Добавление комментария к объявлению")
     public ResponseEntity<CreateOrUpdateCommentDto> createComment(@PathVariable Integer id, @RequestBody CreateOrUpdateCommentDto createCommentDto, Authentication authentication) {
-        Optional<Ad> ad = adService.findOne(id);
+        Optional<Ad> ad = adRepository.findById(id);
         if (ad == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -54,7 +56,7 @@ public class CommentController {
     @DeleteMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<CommentDto> deleteComment(@PathVariable Integer adId,
                                                     @PathVariable Integer commentId) {
-        Optional<Ad> ad = adService.findOne(adId);
+        Optional<Ad> ad = adRepository.findById(adId);
         if (ad == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

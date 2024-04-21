@@ -10,7 +10,9 @@ import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
+import ru.skypro.homework.exceptions.AdNotFoundException;
 import ru.skypro.homework.exceptions.UserIllegalArgumentException;
+import ru.skypro.homework.exceptions.UserNotFoundException;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
@@ -35,7 +37,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(NewPasswordDto newPasswordDto, Authentication authentication) {
-        User user = userRepository.findById(newPasswordDto.getId()).get();
+        User user = userRepository.findById(newPasswordDto.getId()).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
         if(user.getPassword().equals(newPasswordDto.getCurrentPassword())) {
             user.setPassword(newPasswordDto.getNewPasswordDto());
             userRepository.save(user);
@@ -46,23 +48,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getMe(Authentication authentication) {
-        return userRepository.findByEmail(authentication.getName()).map(userMapper::userToUserDto).orElseThrow();
+        return userRepository.findByEmail(authentication.getName()).map(userMapper::userToUserDto).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
     }
 
     @Override
-    public UpdateUserDto updateUser(UpdateUserDto updateUserDto, Authentication authentication) {
-        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
-        user.setFirstName(updateUserDto.getFirstName());
-        user.setLastName(updateUserDto.getLastName());
-        user.setPhone(updateUserDto.getPhone());
+    public UserDto updateUser(UserDto userDto, Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setPhone(userDto.getPhone());
         userRepository.save(user);
-        return userMapper.updateUserToDto(user);
+        return userMapper.userToUserDto(user);
     }
 
     @Override
-    public void updateImage(Authentication authentication, MultipartFile file) throws IOException {
+    public void updateAvatar(Authentication authentication, MultipartFile file) throws IOException {
 
-        User users = userRepository.findByEmail(authentication.getName()).get();
+        User users = userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
         Path filePath = Path.of("./image", authentication.getName());
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
@@ -80,8 +82,35 @@ public class UserServiceImpl implements UserService {
         image.setData(file.getBytes());
         imageRepository.save(image);
 
-        users.setImages(image);
+        users.setImage(image);
         userRepository.save(users);
     }
 
+    /**
+     Retrieves the UserDto object for the user with the specified email.
+     @param email The email of the user.
+     @return The UserDto object representing the user.
+     @throws UserNotFoundException if the user is not found.
+     */
+    @Override
+    public UserDto findByEmail(String email) {
+        User findedUser = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
+        return userMapper.userToUserDto(findedUser);
+    }
+
+    /**
+     Retrieves the image data of the user with the specified ID.
+     @param id The ID of the user.
+     @return The byte array representing the image data.
+     @throws IOException if an I/O error occurs while reading the image data.
+     */
+    @Override
+    public Image getImage(Integer id) {
+        return userRepository.findById(Long.valueOf(id)).get().getImage();
+    }
+
+    @Override
+    public User getUser(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
+    }
 }

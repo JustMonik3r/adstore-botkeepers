@@ -30,5 +30,5 @@ public class User {
     private String password;
     @OneToOne
     @JoinColumn(name = "image_id")
-    private Image images;
+    private Image image;
 }

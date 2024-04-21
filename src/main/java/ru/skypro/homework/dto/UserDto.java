@@ -6,7 +6,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 @Data
 public class UserDto {
-    private Long id;
+    private Integer id;
     private String email;
     private String firstName;
     private String lastName;
