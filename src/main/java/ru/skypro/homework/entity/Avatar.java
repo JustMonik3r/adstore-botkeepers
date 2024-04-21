@@ -11,6 +11,4 @@ public class Avatar {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private byte[] image;
-    @OneToOne
-    private User user;
 }

@@ -13,7 +13,7 @@ public class AdDto {
 
     private String image;
 
-    private Integer pk;
+    private Integer id;
 
     private Integer price;
 

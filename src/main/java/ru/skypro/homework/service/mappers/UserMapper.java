@@ -1,10 +1,6 @@
 package ru.skypro.homework.service.mappers;
 
-import org.mapstruct.InjectionStrategy;
-import org.mapstruct.*;
-import org.mapstruct.MappingConstants;
 import org.springframework.stereotype.Component;
-import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.entity.User;
 @Component
@@ -18,7 +14,6 @@ public class UserMapper {
         dto.setLastName(user.getLastName());
         dto.setPhone(user.getPhone());
         dto.setRole(user.getRole());
-        dto.setAvatar(user.getAvatar().getImage().toString());
         return dto;
     }
 

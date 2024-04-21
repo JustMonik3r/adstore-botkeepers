@@ -6,16 +6,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
-import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.entity.Avatar;
-import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
-import ru.skypro.homework.exceptions.AdNotFoundException;
 import ru.skypro.homework.exceptions.UserIllegalArgumentException;
 import ru.skypro.homework.exceptions.UserNotFoundException;
 import ru.skypro.homework.repository.AvatarRepository;
-import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
 import ru.skypro.homework.service.mappers.UserMapper;
@@ -39,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(NewPasswordDto newPasswordDto, Authentication authentication) {
-        User user = userRepository.findById(newPasswordDto.getId()).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
         if(user.getPassword().equals(newPasswordDto.getCurrentPassword())) {
             user.setPassword(newPasswordDto.getNewPasswordDto());
             userRepository.save(user);
@@ -74,15 +70,20 @@ public class UserServiceImpl implements UserService {
                 InputStream is = file.getInputStream();
                 OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
                 BufferedInputStream bis = new BufferedInputStream(is, 1024);
-                BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+                BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
         ) {
             bis.transferTo(bos);
         }
-        Avatar avatar = avatarRepository.findById(user.getAvatar().getId()).orElseGet(Avatar::new);
-        avatar.setUser(user);
+        Avatar avatar;
+        if(user.getAvatar() == null) {
+            avatar = new Avatar();
+        }
+        else {
+            Integer id = user.getAvatar().getId();
+            avatar = avatarRepository.findById(id).orElseThrow();
+        }
         avatar.setImage(file.getBytes());
         avatarRepository.save(avatar);
-
         user.setAvatar(avatar);
         userRepository.save(user);
     }
