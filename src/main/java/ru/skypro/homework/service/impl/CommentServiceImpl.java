@@ -1,21 +1,23 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.entity.Comment;
+import ru.skypro.homework.entity.User;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.mappers.CommentMapper;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,9 +25,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
-    //private final CommentMapper commentMapper;
-    private final UserRepository userRepository;
+    private final CommentMapper commentMapper;
     private final AdRepository adRepository;
+    private final UserRepository userRepository;
+    private final LocalDateTime today = LocalDateTime.now();
+    DateTimeFormatter dateAndTime = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
     /**
      * Получает комментарии к объявлению.
@@ -33,47 +37,33 @@ public class CommentServiceImpl implements CommentService {
      * @return Объект CommentsDto, содержащий список комментариев.
      */
     public CommentsDto getComments(Integer id) {
-//        List<Comment> comment = commentRepository.findByAdPk(id);
-//        if(comment == null) {
-//            return null;
-//        }
-//        List<CommentDto> commentList = comment.stream()
-//                .map(commentMapper::commentToCommentDto)
-//                .collect(Collectors.toList());
-//        return new CommentsDto(commentList.size(), commentList);
-        return null;
+        List<Comment> comments = adRepository.findById(id).get().getComments();
+        List<CommentDto> collect = comments.stream().map(e -> commentMapper.commentsToDto(e)).collect(Collectors.toList());
+        return new CommentsDto(collect.size(), collect);
     }
 
-    public CommentDto createComment(Integer id,
-                                    CreateOrUpdateCommentDto createCommentDto){
-//        Timestamp localDateTime = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
-//        Comment comment = new Comment();
-//        Ad ad = adRepository.findAdByPk(id);
-//        if(ad == null) {
-//            return null;
-//        }
-//        comment.setText(createCommentDto.getText());
-//        comment.setCreatedAt(localDateTime);
-//        comment.setAd(ad);
-//        commentRepository.save(comment);
-//        return commentMapper.commentToCommentDto(comment);
-        return null;
+    public CreateOrUpdateCommentDto createComment(Integer id, CreateOrUpdateCommentDto createCommentDto, Authentication authentication){
+        User user = userRepository.findByEmail(authentication.getName()).get();
+        Ad ad = adRepository.findById(id).get();
+        Comment comment = new Comment();
+        comment.setAuthor(user);
+        comment.setCreateAt(LocalDateTime.parse(today.format(dateAndTime)));
+        comment.setAds(ad);
+        comment.setText(createCommentDto.getText());
+        commentRepository.save(comment);
+        return commentMapper.updateCommentToDto(comment);
     }
 
     public void deleteComment(Integer adId, Integer commentId) {
-//        Comment comment = commentRepository.findById(commentId);
-//        commentRepository.delete(comment);
+        Comment comment = commentRepository.findByIdAndAdsId(commentId, adId).orElseThrow();
+        commentRepository.delete(comment);
     }
 
-    public CommentDto updateComment (Integer adId, Integer commentId,CreateOrUpdateCommentDto updateCommentDto){
-//        Comment comment = commentRepository.findById(commentId);
-//        if (comment != null) {
-//            comment.setText(updateCommentDto.getText());
-//            commentRepository.save(comment);
-//            return commentMapper.commentToCommentDto(comment);
-//        }
-//        return null;
-        return null;
+    public CreateOrUpdateCommentDto updateComment (Integer adId, Integer commentId,CreateOrUpdateCommentDto updateCommentDto){
+        Comment comment = commentRepository.findByIdAndAdsId(commentId, adId).orElseThrow();
+        comment.setText(updateCommentDto.getText());
+        Comment save = commentRepository.save(comment);
+        return commentMapper.updateCommentToDto(save);
     }
 }
 

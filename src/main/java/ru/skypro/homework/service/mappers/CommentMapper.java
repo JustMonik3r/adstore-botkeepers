@@ -1,31 +1,19 @@
 package ru.skypro.homework.service.mappers;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
 import ru.skypro.homework.dto.CommentDto;
+import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 import ru.skypro.homework.entity.Comment;
 
-//@Component
+
+@Mapper(componentModel = "spring")
 public interface CommentMapper {
-    /*static Comment commentDtoToComment(CommentDto commentDto) {
-        Comment comment = new Comment();
-        comment.setId(commentDto.getPk());
-        comment.setCreatedAt(commentDto.getCreatedAt());
-        comment.setText(commentDto.getText());
-        return comment;
-    }*/
-
-
-
-
-    /*CommentDto commentToCommentDto(Comment comment){
-        CommentDto commentDto = new CommentDto();
-        commentDto.setPk(comment.getId());
-        //commentDto.setAuthor(comment.getUser().getId());
-       // commentDto.setAuthorImage(comment.getUser().getId());
-       // commentDto.setAuthorFirstName(comment.getUser().getFirstName());
-        commentDto.setCreatedAt(comment.getCreatedAt());
-        commentDto.setText(comment.getText());
-        return commentDto;
-    }*/
+    @Mapping(target = "pk",source = "id")
+    @Mapping(target = "author",expression = "java(comment.getAuthor().getId())")
+    CommentDto commentsToDto(Comment comment);
+    @Mapping(target = "pk",source = "id")
+    CreateOrUpdateCommentDto updateCommentToDto(Comment comment);
 
 }
