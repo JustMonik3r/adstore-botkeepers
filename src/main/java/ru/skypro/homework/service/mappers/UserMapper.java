@@ -9,7 +9,7 @@ import ru.skypro.homework.entity.User;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-   // @Mapping(source = "firstName", target = "firstName")
+   //@Mapping(source = "firstName", target = "firstName")
     UserDto userToUserDto(User user);
 
     @Mapping(target = "password", ignore = true)
