@@ -2,7 +2,6 @@ package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +18,6 @@ import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdService;
-import ru.skypro.homework.service.UserService;
 import ru.skypro.homework.service.mappers.AdMapper;
 
 import java.io.*;
@@ -41,8 +39,6 @@ public class AdServiceImpl implements AdService {
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
 
-    @Value("${image.dir.path}")
-    private String imagesDir;
 
     private String objectAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

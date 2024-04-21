@@ -3,7 +3,6 @@ package ru.skypro.homework.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
@@ -23,7 +22,7 @@ public class Ad {
     @JoinColumn(name = "users_id")
     private User users;
 
-    @OneToMany(mappedBy = "ads")
+    @OneToMany(mappedBy = "ad")
     private List<Comment> comments;
 
     @ManyToOne
