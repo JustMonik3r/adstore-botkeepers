@@ -17,15 +17,17 @@ public interface AdService {
 
     ExtendedAdDto getAdById(Integer id);
 
-    void deleteAdById(Integer id);
+    CreateOrUpdateAdDto updateAdById(Integer id, CreateOrUpdateAdDto createOrUpdateAdDto);
 
-    CreateOrUpdateAdDto updateAdById(Integer id, CreateOrUpdateAdDto updateAd);
+    void deleteAdById(Integer id);
 
     AdsDto getMyAds(Authentication authentication);
 
     void updateImage(Integer adId, MultipartFile file) throws IOException;
-     Optional<Ad> findOne(Integer id);
 
-    //byte[] getImage (Integer imageId) throws IOException;
-  
+    AdsDto getAllAds();
+
+    Optional<Ad> findOne(Integer id);
+
+    Ad findAd(Integer id);
 }

@@ -20,10 +20,10 @@ public class Ad {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "users_id")
-    private User users;
+    @JoinColumn(name = "author_id")
+    private User author;
 
-    @OneToMany(mappedBy = "ads")
+    @OneToMany(mappedBy = "ad")
     private List<Comment> comments;
 
     @ManyToOne
