@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.entity.Avatar;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
 
@@ -23,7 +24,7 @@ public interface UserService {
 
     void updateAvatar(Authentication authentication, MultipartFile image) throws IOException;
 
-    Image getImage(Integer id);
+    Avatar getAvatar(Integer id);
 
     User getUser(String userName);
 }

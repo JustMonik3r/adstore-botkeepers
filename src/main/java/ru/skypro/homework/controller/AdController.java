@@ -71,7 +71,7 @@ public class AdController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        String userEmail = adRepository.findAdByPk(id).getUser().getEmail();
+        String userEmail = adRepository.findAdById(id).getUser().getEmail();
         boolean isAdminOrOwner = CheckRoleService.isAdminOrOwnerAd(authentication, userEmail);
         ExtendedAdDto foundAd = adService.findExtendedAd(id);
 
@@ -93,7 +93,7 @@ public class AdController {
         if (authentication == null || authentication.getName() == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        String userEmail = adRepository.findAdByPk(id).getUser().getEmail();
+        String userEmail = adRepository.findAdById(id).getUser().getEmail();
         boolean isAdminOrOwner = CheckRoleService.isAdminOrOwnerAd(authentication, userEmail);
         ExtendedAdDto foundAd = adService.findExtendedAd(id);
 
@@ -122,7 +122,7 @@ public class AdController {
     public ResponseEntity<byte[]> updateImage(@PathVariable Integer id,
                                               @RequestParam MultipartFile image,
                                               Authentication authentication) throws IOException {
-        String userEmail = adRepository.findAdByPk(id).getUser().getEmail();
+        String userEmail = adRepository.findAdById(id).getUser().getEmail();
         boolean isAdminOrOwner = CheckRoleService.isAdminOrOwnerAd(authentication, userEmail);
         if (authentication.getName() == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

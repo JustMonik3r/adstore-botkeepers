@@ -9,7 +9,7 @@ import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.AdsDto;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
-import ru.skypro.homework.service.mappers.AdMapper;
+import ru.skypro.homework.dto.mapper.AdMapper;
 import ru.skypro.homework.service.mappers.CreateOrUpdateAdMapper;
 import ru.skypro.homework.service.mappers.ExtendedAdMapper;
 import ru.skypro.homework.entity.Ad;
@@ -85,7 +85,7 @@ public class AdServiceImpl implements AdService {
      */
     @Override
     public AdDto updateAds(Integer id, CreateOrUpdateAdDto createOrUpdateAdDto) {
-        Ad ad = adRepository.findAdByPk(id);
+        Ad ad = adRepository.findAdById(id);
         if (ad == null) {
             return null;
         }
@@ -103,7 +103,7 @@ public class AdServiceImpl implements AdService {
      */
     @Override
     public void deleteAd(Integer id, Authentication authentication) {
-        Ad deletedAd = adRepository.findAdByPk(id);
+        Ad deletedAd = adRepository.findAdById(id);
         if (CheckRoleService.isAdminOrOwnerAd(authentication, deletedAd.getUser().getEmail())) {
             adRepository.deleteById(id);
         } else {
@@ -117,7 +117,7 @@ public class AdServiceImpl implements AdService {
      */
     @Override
     public ExtendedAdDto findExtendedAd(Integer id) {
-        Ad ad = adRepository.findAdByPk(id);
+        Ad ad = adRepository.findAdById(id);
         if (ad != null) {
             return ExtendedAdMapper.toDto(ad);
         }
@@ -134,7 +134,7 @@ public class AdServiceImpl implements AdService {
     public byte[] updateImageAd(Integer id, MultipartFile image) throws IOException {
         Ad ad = adRepository.findById(id).orElseThrow(() -> new AdNotFoundException("Объявление не найдено."));
         ad.setData(image.getBytes());
-        ad.setImageUrl("/images/" + ad.getPk());
+        ad.setImageUrl("/images/" + ad.getId());
         adRepository.save(ad);
         return ad.getData();
     }
@@ -146,6 +146,6 @@ public class AdServiceImpl implements AdService {
      */
     @Override
     public byte[] getImage(Integer imageId) throws IOException {
-        return adRepository.findAdByPk(imageId).getData();
+        return adRepository.findAdById(imageId).getData();
     }
 }

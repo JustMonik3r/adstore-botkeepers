@@ -37,13 +37,13 @@ public class CommentServiceImpl implements CommentService {
      * @return Объект CommentsDto, содержащий список комментариев.
      */
     public CommentsDto getComments(Integer id) {
-        List<Comment> comments = commentRepository.findByAdPk(id);
-        List<CommentDto> collect = comments.stream().map(e -> commentMapper.commentsToDto(e)).collect(Collectors.toList());
+        List<Comment> comments = commentRepository.findByAdsId(id);
+        List<CommentDto> collect = comments.stream().map(e -> commentMapper.commentToCommentDto(e)).collect(Collectors.toList());
         CommentsDto commentsDto = new CommentsDto(collect.size(), collect);
         return commentsDto;
     }
 
-    public CreateOrUpdateCommentDto createComment(Integer id, CreateOrUpdateCommentDto createCommentDto, Authentication authentication){
+    public CommentDto createComment(Integer id, CreateOrUpdateCommentDto createCommentDto, Authentication authentication){
         User user = userRepository.findByEmail(authentication.getName()).get();
         Ad ad = adRepository.findById(id).get();
         Comment comment = new Comment();
@@ -52,7 +52,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setAds(ad);
         comment.setText(createCommentDto.getText());
         commentRepository.save(comment);
-        return commentMapper.updateCommentToDto(comment);
+        return commentMapper.commentToCommentDto(comment);
     }
 
     public void deleteComment(Integer adId, Integer commentId) {
@@ -60,11 +60,11 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
     }
 
-    public CreateOrUpdateCommentDto updateComment (Integer adId, Integer commentId,CreateOrUpdateCommentDto updateCommentDto){
+    public CommentDto updateComment (Integer adId, Integer commentId,CreateOrUpdateCommentDto updateCommentDto){
         Comment comment = commentRepository.findByIdAndAdsId(commentId, adId).orElseThrow();
         comment.setText(updateCommentDto.getText());
         Comment save = commentRepository.save(comment);
-        return commentMapper.updateCommentToDto(save);
+        return commentMapper.commentToCommentDto(save);
     }
 }
 

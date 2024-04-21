@@ -42,12 +42,12 @@ public class CommentController {
 
 
     @Operation(summary = "Добавление комментария к объявлению")
-    public ResponseEntity<CreateOrUpdateCommentDto> createComment(@PathVariable Integer id, @RequestBody CreateOrUpdateCommentDto createCommentDto, Authentication authentication) {
+    public ResponseEntity<CommentDto> createComment(@PathVariable Integer id, @RequestBody CreateOrUpdateCommentDto createCommentDto, Authentication authentication) {
         Optional<Ad> ad = adRepository.findById(id);
         if (ad == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        CreateOrUpdateCommentDto commentDto = commentService.createComment(id, createCommentDto, authentication);
+        CommentDto commentDto = commentService.createComment(id, createCommentDto, authentication);
         return ResponseEntity.ok(commentDto);
     }
 
@@ -67,9 +67,9 @@ public class CommentController {
 
     @Operation(summary = "Обновление комментария")
     @PatchMapping("/{adId}/comments/{commentId}")
-    public ResponseEntity<CreateOrUpdateCommentDto> updateComment (@PathVariable Integer adId,
+    public ResponseEntity<CommentDto> updateComment (@PathVariable Integer adId,
                                                                    @PathVariable Integer commentId,@RequestBody CreateOrUpdateCommentDto updateComment){
-        CreateOrUpdateCommentDto comment =  commentService.updateComment(adId, commentId, updateComment);
+        CommentDto comment =  commentService.updateComment(adId, commentId, updateComment);
         if (comment == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

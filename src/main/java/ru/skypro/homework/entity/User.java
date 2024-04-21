@@ -24,11 +24,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private RoleDto role;
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
-//    private Avatar avatar;
     @Column(name = "password")
     private String password;
     @OneToOne
-    @JoinColumn(name = "image_id")
-    private Image image;
+    @JoinColumn(name = "avatar_id")
+    private Avatar avatar;
 }

@@ -8,11 +8,13 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.entity.Avatar;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
 import ru.skypro.homework.exceptions.AdNotFoundException;
 import ru.skypro.homework.exceptions.UserIllegalArgumentException;
 import ru.skypro.homework.exceptions.UserNotFoundException;
+import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
@@ -31,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final ImageRepository imageRepository;
+    private final AvatarRepository avatarRepository;
 
 
 
@@ -64,7 +66,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateAvatar(Authentication authentication, MultipartFile file) throws IOException {
 
-        User users = userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
         Path filePath = Path.of("./image", authentication.getName());
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
@@ -76,14 +78,13 @@ public class UserServiceImpl implements UserService {
         ) {
             bis.transferTo(bos);
         }
-        Image image = imageRepository.findById(users.getId()).orElseGet(Image::new);
-        image.setFileSize(file.getSize());
-        image.setMediaType(file.getContentType());
-        image.setData(file.getBytes());
-        imageRepository.save(image);
+        Avatar avatar = avatarRepository.findById(user.getAvatar().getId()).orElseGet(Avatar::new);
+        avatar.setUser(user);
+        avatar.setImage(file.getBytes());
+        avatarRepository.save(avatar);
 
-        users.setImage(image);
-        userRepository.save(users);
+        user.setAvatar(avatar);
+        userRepository.save(user);
     }
 
     /**
@@ -105,8 +106,8 @@ public class UserServiceImpl implements UserService {
      @throws IOException if an I/O error occurs while reading the image data.
      */
     @Override
-    public Image getImage(Integer id) {
-        return userRepository.findById(Long.valueOf(id)).get().getImage();
+    public Avatar getAvatar(Integer id) {
+        return userRepository.findById(Long.valueOf(id)).get().getAvatar();
     }
 
     @Override

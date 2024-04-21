@@ -16,7 +16,7 @@ import javax.persistence.*;
 public class Ad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer pk;
+    private Integer id;
     @Column(name = "title", nullable = false)
     private String title;
     @Column(name = "description")

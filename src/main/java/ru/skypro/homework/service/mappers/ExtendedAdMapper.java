@@ -9,7 +9,7 @@ public class ExtendedAdMapper {
 
     public static ExtendedAdDto toDto(Ad entity) {
         ExtendedAdDto dto = new ExtendedAdDto();
-        dto.setPk(entity.getPk());
+        dto.setPk(entity.getId());
         dto.setAuthorFirstName(entity.getUser().getFirstName());
         dto.setAuthorLastName(entity.getUser().getLastName());
         dto.setDescription(entity.getDescription());
@@ -17,7 +17,7 @@ public class ExtendedAdMapper {
         dto.setPhone(entity.getUser().getPhone());
         dto.setPrice(entity.getPrice());
         dto.setTitle(entity.getTitle());
-        dto.setImage("/images/" + entity.getPk());
+        dto.setImage("/images/" + entity.getId());
         return dto;
     }
 }

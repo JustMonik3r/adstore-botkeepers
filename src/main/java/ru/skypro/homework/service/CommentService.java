@@ -8,11 +8,11 @@ import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 public interface CommentService {
     CommentsDto getComments(Integer id);
 
-    CreateOrUpdateCommentDto createComment(Integer id,
+    CommentDto createComment(Integer id,
                              CreateOrUpdateCommentDto createCommentDto, Authentication authentication);
 
     void deleteComment(Integer adId, Integer commentId);
 
-    CreateOrUpdateCommentDto updateComment(Integer id, Integer commentId,
+    CommentDto updateComment(Integer id, Integer commentId,
                              CreateOrUpdateCommentDto updateCommentDto);
 }
