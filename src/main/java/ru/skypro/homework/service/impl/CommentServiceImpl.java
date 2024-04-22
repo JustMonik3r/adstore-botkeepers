@@ -29,7 +29,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
     private final AdRepository adRepository;
-    private final AdService adService;
+
     private final UserRepository userRepository;
     private final LocalDateTime today = LocalDateTime.now();
     DateTimeFormatter dateAndTime = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
