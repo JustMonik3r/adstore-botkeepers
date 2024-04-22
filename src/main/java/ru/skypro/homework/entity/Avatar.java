@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class Avatar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private byte[] image;
     @OneToOne
     private User user;
