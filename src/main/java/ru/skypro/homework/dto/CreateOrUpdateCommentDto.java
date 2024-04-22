@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CreateOrUpdateCommentDto {
 
-    private Integer pk;
+    //private Integer pk;
 
     private String text;
 
-    private LocalDateTime createdAt;
+   // private LocalDateTime createdAt;
 
 }

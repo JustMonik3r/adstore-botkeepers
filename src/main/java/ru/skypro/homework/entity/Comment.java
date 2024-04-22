@@ -20,7 +20,7 @@ public class Comment {
     @Column(name = "id")
     private Integer id;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "ads_id")
     private Ad ads;
 

@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.repository.AdRepository;
+import ru.skypro.homework.service.AdService;
+import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.impl.AdServiceImpl;
 import ru.skypro.homework.service.impl.CommentServiceImpl;
 
@@ -25,8 +27,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/ads")
 public class AdController {
-    private final AdServiceImpl adService;
-    private final CommentServiceImpl commentService;
+    private final AdService adService;
+    private final CommentService commentService;
 
     @GetMapping
     public ResponseEntity<AdsDto> getAllAds() {
@@ -37,7 +39,7 @@ public class AdController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<CreateOrUpdateAdDto> createAd(Authentication authentication, @RequestPart(value = "properties", required = true) CreateOrUpdateAdDto properties,
                                            @RequestPart(value = "image", required = true) MultipartFile image) throws IOException {
-        CreateOrUpdateAdDto createAd = adService.createAd(authentication,properties, image);
+        CreateOrUpdateAdDto createAd = adService.createAd(authentication, properties, image);
         return ResponseEntity.ok(createAd);
     }
 

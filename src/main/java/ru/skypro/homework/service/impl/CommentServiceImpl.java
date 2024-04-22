@@ -37,14 +37,14 @@ public class CommentServiceImpl implements CommentService {
      * @return Объект CommentsDto, содержащий список комментариев.
      */
     public CommentsDto getComments(Integer id) {
-        List<Comment> comments = adRepository.findById(id).get().getComments();
+        List<Comment> comments = adRepository.findById(id).orElseThrow().getComments();
         List<CommentDto> collect = comments.stream().map(e -> commentMapper.commentsToDto(e)).collect(Collectors.toList());
         return new CommentsDto(collect.size(), collect);
     }
 
     public CreateOrUpdateCommentDto createComment(Integer id, CreateOrUpdateCommentDto createCommentDto, Authentication authentication){
-        User user = userRepository.findByEmail(authentication.getName()).get();
-        Ad ad = adRepository.findById(id).get();
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        Ad ad = adRepository.findById(id).orElseThrow();
         Comment comment = new Comment();
         comment.setAuthor(user);
         comment.setCreateAt(LocalDateTime.parse(today.format(dateAndTime)));

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.CommentDto;
@@ -30,6 +31,7 @@ public class CommentController {
 
 
     @Operation(summary = "Получение комментариев объявления")
+    @GetMapping("/{id}/comments")
     public ResponseEntity<CommentsDto> getComments(@PathVariable Integer id) {
         CommentsDto comments = commentService.getComments(id);
         if (comments == null) {
@@ -40,16 +42,16 @@ public class CommentController {
 
 
     @Operation(summary = "Добавление комментария к объявлению")
-    public ResponseEntity<CreateOrUpdateCommentDto> createComment(@PathVariable Integer id, @RequestBody CreateOrUpdateCommentDto createCommentDto, Authentication authentication) {
-        Optional<Ad> ad = adService.findOne(id);
-        if (ad == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<CreateOrUpdateCommentDto> addComment(@PathVariable("id") Integer id,
+                                                 @RequestBody CreateOrUpdateCommentDto createCommentDto,
+                                                 Authentication authentication) {
         CreateOrUpdateCommentDto commentDto = commentService.createComment(id, createCommentDto, authentication);
         return ResponseEntity.ok(commentDto);
     }
 
 
+   // @PreAuthorize("hasROLE('ADMIN')")
     @Operation(summary = "Удаление комментария")
     @DeleteMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<CommentDto> deleteComment(@PathVariable Integer adId,
@@ -63,6 +65,7 @@ public class CommentController {
     }
 
 
+   // @PreAuthorize("hasROLE('ADMIN')")
     @Operation(summary = "Обновление комментария")
     @PatchMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<CreateOrUpdateCommentDto> updateComment (@PathVariable Integer adId,
