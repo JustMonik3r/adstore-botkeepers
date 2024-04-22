@@ -26,7 +26,6 @@ public class User {
     private RoleDto role;
     @Column(name = "password")
     private String password;
-    @OneToOne
-    @JoinColumn(name = "avatar_id")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Avatar avatar;
 }

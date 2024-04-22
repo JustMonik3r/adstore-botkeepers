@@ -14,5 +14,5 @@ public class UserDto {
     private String phone;
     @Enumerated(EnumType.STRING)
     private RoleDto role;
-    private String avatar;
+    //private byte[] avatar;
 }

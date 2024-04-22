@@ -12,7 +12,7 @@ create table users
 
 create table ads
 (
-    pk serial not null primary key,
+    id serial not null primary key,
     title   VARCHAR,
     description VARCHAR,
     price INTEGER,

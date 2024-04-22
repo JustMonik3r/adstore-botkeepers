@@ -23,6 +23,7 @@ import ru.skypro.homework.service.mappers.UserMapper;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -50,7 +51,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getMe(Authentication authentication) {
-        return userRepository.findByEmail(authentication.getName()).map(userMapper::userToUserDto).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
+
+        return userRepository.findByEmail(authentication.getName())
+                .map(userMapper::userToUserDto).orElseThrow(() -> new UserNotFoundException("Пользователь не найден."));
     }
 
     @Override
@@ -78,10 +81,21 @@ public class UserServiceImpl implements UserService {
         ) {
             bis.transferTo(bos);
         }
-        Avatar avatar = avatarRepository.findById(user.getAvatar().getId()).orElseGet(Avatar::new);
-        avatar.setUser(user);
-        avatar.setImage(file.getBytes());
-        avatarRepository.save(avatar);
+        Avatar avatar;
+        if(Objects.nonNull(user.getAvatar())){
+            var avatarOld = user.getAvatar();
+            var avatarId = avatarOld.getId();
+            avatar = avatarRepository.findById(avatarId).orElseGet(() -> new Avatar());
+            avatar.setUser(user);
+            avatar.setImage(file.getBytes());
+            avatarRepository.save(avatar);
+        } else {
+            avatar = new Avatar();
+            avatar.setUser(user);
+            avatar.setImage(file.getBytes());
+            avatarRepository.save(avatar);
+        }
+
 
         user.setAvatar(avatar);
         userRepository.save(user);

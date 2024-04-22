@@ -13,4 +13,6 @@ public class Avatar {
     private byte[] image;
     @OneToOne
     private User user;
+
+    //private Integer user_id;
 }
