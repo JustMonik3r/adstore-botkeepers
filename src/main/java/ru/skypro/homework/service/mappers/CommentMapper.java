@@ -20,7 +20,7 @@ public interface CommentMapper {
     CommentDto commentsToDto(Comment comment);
 
 
-    @Mapping(target = "pk",source = "id")
+    @Mapping(target = "text",source = "text")
     CreateOrUpdateCommentDto updateCommentToDto(Comment comment);
 
 }

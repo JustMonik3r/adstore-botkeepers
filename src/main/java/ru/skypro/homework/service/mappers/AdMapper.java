@@ -27,6 +27,11 @@ public interface AdMapper {
     @Mapping(target = "title", source = "title")
     ExtendedAdDto extendAdToDto(Ad ad);
 
+
+    @Mapping(target = "title", source = "title")
+    @Mapping(target = "price", source = "price")
+    @Mapping(target = "description", source = "description")
     CreateOrUpdateAdDto updateAdToDto(Ad ad);
 }
+
 

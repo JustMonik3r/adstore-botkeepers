@@ -111,15 +111,16 @@ public class AdServiceImpl implements AdService {
     //Получение объявлений авторизованного пользователь
     public AdsDto getMyAds(Authentication authentication) {
         User userEntity = userRepository.findByEmail(authentication.getName()).get();
-        List<AdDto> collect = adRepository.findByUsersId(userEntity.getId()).stream().map(e -> {
-            AdDto adDto = new AdDto();
+        List<AdDto> collect = userEntity.getAdEntityList().stream().map(adMapper::adsToDto).collect(Collectors.toList());
+        //List<AdDto> collect = adRepository.findByUsersId(userEntity.getId()).stream().map(e ->  {
+            /*AdDto adDto = new AdDto();
             adDto.setAuthor(e.getUsers().getId());
             adDto.setPk(e.getId());
             adDto.setImage("http://localhost:3000/ads/" + e.getId() + "/image");
             adDto.setTitle(e.getTitle());
             adDto.setPrice(e.getPrice());
-            return adDto;
-        }).collect(Collectors.toList());
+            return adDto;*/
+       // }).collect(Collectors.toList());
         return new AdsDto(collect.size(),collect);
     }
 
