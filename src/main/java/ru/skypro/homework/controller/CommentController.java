@@ -26,8 +26,8 @@ import java.util.Optional;
 @RequestMapping("/ads")
 @Tag( name = "Комментарии")
 public class CommentController {
-    private CommentService commentService;
-    private AdService adService;
+    private final CommentService commentService;
+    private final AdService adService;
 
 
     @Operation(summary = "Получение комментариев объявления")
@@ -43,10 +43,10 @@ public class CommentController {
 
     @Operation(summary = "Добавление комментария к объявлению")
     @PostMapping("/{id}/comments")
-    public ResponseEntity<CreateOrUpdateCommentDto> addComment(@PathVariable("id") Integer id,
+    public ResponseEntity<CommentDto> addComment(@PathVariable("id") Integer adId,
                                                  @RequestBody CreateOrUpdateCommentDto createCommentDto,
                                                  Authentication authentication) {
-        CreateOrUpdateCommentDto commentDto = commentService.createComment(id, createCommentDto, authentication);
+        CommentDto commentDto = commentService.createComment(adId, createCommentDto, authentication);
         return ResponseEntity.ok(commentDto);
     }
 
@@ -55,22 +55,22 @@ public class CommentController {
     @Operation(summary = "Удаление комментария")
     @DeleteMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<CommentDto> deleteComment(@PathVariable Integer adId,
-                                                    @PathVariable Integer commentId) {
+                                                    @PathVariable Integer commentId,
+                                                    Authentication authentication) {
         Optional<Ad> ad = adService.findOne(adId);
         if (ad == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        commentService.deleteComment(adId, commentId);
+        commentService.deleteComment(adId, commentId, authentication);
         return ResponseEntity.ok().build();
     }
 
 
-   // @PreAuthorize("hasROLE('ADMIN')")
     @Operation(summary = "Обновление комментария")
     @PatchMapping("/{adId}/comments/{commentId}")
-    public ResponseEntity<CreateOrUpdateCommentDto> updateComment (@PathVariable Integer adId,
-                                                                   @PathVariable Integer commentId,@RequestBody CreateOrUpdateCommentDto updateComment){
-        CreateOrUpdateCommentDto comment =  commentService.updateComment(adId, commentId, updateComment);
+    public ResponseEntity<CommentDto> updateComment (@PathVariable Integer adId,
+                                                                   @PathVariable Integer commentId,@RequestBody CreateOrUpdateCommentDto updateComment, Authentication authentication){
+        CommentDto comment =  commentService.updateComment(adId, commentId, updateComment, authentication);
         if (comment == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

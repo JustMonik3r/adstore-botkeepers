@@ -4,6 +4,7 @@ import lombok.Data;
 import ru.skypro.homework.dto.RoleDto;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -31,4 +32,6 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "image_id")
     private Image images;
+    @OneToMany(mappedBy = "users")
+    private List<Ad> adEntityList;
 }
