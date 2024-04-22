@@ -27,7 +27,7 @@ public class Ad {
     @OneToMany(mappedBy = "ads")
     private List<Comment> comments;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "image_id")
     private Image images;
 

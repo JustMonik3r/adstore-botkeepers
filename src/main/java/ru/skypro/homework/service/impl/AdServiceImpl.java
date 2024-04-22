@@ -162,4 +162,10 @@ public class AdServiceImpl implements AdService {
     public Ad findAd(Integer id) {
         return adRepository.findById(id).get();
     }
+
+    //находит картинку по идентификатору
+    @Override
+    public byte[] getImage(Integer id) throws IOException {
+        return adRepository.findAdByImages(id).getImages().getData();
+    }
 }

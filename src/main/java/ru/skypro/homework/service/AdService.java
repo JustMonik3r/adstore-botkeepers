@@ -28,6 +28,6 @@ public interface AdService {
 
     AdsDto getAllAds();
 
-    //byte[] getImage (Integer imageId) throws IOException;
+    byte[] getImage (Integer id) throws IOException;
   
 }

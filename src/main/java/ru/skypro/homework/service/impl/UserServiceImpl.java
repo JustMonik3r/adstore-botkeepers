@@ -60,6 +60,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public byte[] getImage(Integer id) {
+        return userRepository.findById(id).get().getImages().getData();
+    }
+
+    @Override
     public void updateImage(Authentication authentication, MultipartFile file) throws IOException {
 
         User users = userRepository.findByEmail(authentication.getName()).get();
