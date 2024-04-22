@@ -43,10 +43,10 @@ public class CommentController {
 
     @Operation(summary = "Добавление комментария к объявлению")
     @PostMapping("/{id}/comments")
-    public ResponseEntity<CommentDto> addComment(@PathVariable("id") Integer adId,
+    public ResponseEntity<CommentDto> addComment(@PathVariable("id") Integer id,
                                                  @RequestBody CreateOrUpdateCommentDto createCommentDto,
                                                  Authentication authentication) {
-        CommentDto commentDto = commentService.createComment(adId, createCommentDto, authentication);
+        CommentDto commentDto = commentService.createComment(id, createCommentDto, authentication);
         return ResponseEntity.ok(commentDto);
     }
 
@@ -68,9 +68,9 @@ public class CommentController {
 
     @Operation(summary = "Обновление комментария")
     @PatchMapping("/{adId}/comments/{commentId}")
-    public ResponseEntity<CommentDto> updateComment (@PathVariable Integer adId,
+    public ResponseEntity<CreateOrUpdateCommentDto> updateComment (@PathVariable Integer adId,
                                                                    @PathVariable Integer commentId,@RequestBody CreateOrUpdateCommentDto updateComment, Authentication authentication){
-        CommentDto comment =  commentService.updateComment(adId, commentId, updateComment, authentication);
+        CreateOrUpdateCommentDto comment =  commentService.updateComment(adId, commentId, updateComment, authentication);
         if (comment == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

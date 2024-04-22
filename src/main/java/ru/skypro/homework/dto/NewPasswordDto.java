@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 public class NewPasswordDto {
     private Long id;
     private String currentPassword;
-
     private String newPasswordDto;
 
 }

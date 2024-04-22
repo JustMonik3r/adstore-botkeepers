@@ -45,9 +45,9 @@ public class CommentServiceImpl implements CommentService {
         return new CommentsDto(collect.size(), collect);
     }
 
-    public CommentDto createComment(Integer adId, CreateOrUpdateCommentDto createCommentDto, Authentication authentication){
+    public CommentDto createComment(Integer id, CreateOrUpdateCommentDto createCommentDto, Authentication authentication){
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
-        Ad ad = adRepository.findById(adId).orElseThrow();
+        Ad ad = adRepository.findById(id).orElseThrow();
         Comment comment = new Comment();
         comment.setAuthor(user);
         comment.setCreateAt(LocalDateTime.parse(today.format(dateAndTime)));
@@ -62,11 +62,11 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
     }
 
-    public CommentDto updateComment (Integer adId, Integer commentId,CreateOrUpdateCommentDto updateCommentDto, Authentication authentication){
+    public CreateOrUpdateCommentDto updateComment (Integer adId, Integer commentId,CreateOrUpdateCommentDto updateCommentDto, Authentication authentication){
         Comment comment = commentRepository.findByIdAndAdsId(commentId, adId).orElseThrow();
         comment.setText(updateCommentDto.getText());
         Comment save = commentRepository.save(comment);
-        return commentMapper.commentsToDto(save);
+        return commentMapper.updateCommentToDto(save);
     }
 }
 
