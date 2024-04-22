@@ -10,6 +10,7 @@ import ru.skypro.homework.entity.User;
 public interface UserMapper {
 
    // @Mapping(source = "firstName", target = "firstName")
+
     UserDto userToUserDto(User user);
 
     @Mapping(target = "password", ignore = true)
