@@ -48,8 +48,9 @@ public class AdController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<AdDto> deleteAdById(@PathVariable Integer id) {
-        Optional<Ad> ad = adService.findOne(id);
-        if (ad.isEmpty()) {
+
+        //Optional<Ad> ad = adService.findOne(id);
+        if (adService.getAdById(id) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         adService.deleteAdById(id);
