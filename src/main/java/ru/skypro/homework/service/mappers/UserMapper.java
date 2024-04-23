@@ -11,6 +11,7 @@ public interface UserMapper {
 
    // @Mapping(source = "firstName", target = "firstName")
 
+    @Mapping(target = "image", expression = "java(user.getImages() != null ? \"/avatars/\"+user.getId() : null)")
     UserDto userToUserDto(User user);
 
     @Mapping(target = "password", ignore = true)

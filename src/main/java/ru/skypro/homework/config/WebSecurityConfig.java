@@ -23,20 +23,10 @@ public class WebSecurityConfig {
             "/webjars/**",
             "/login",
             "/register",
-            "/ads"
+            "/ads",
+            "/images/*",
+            "/avatars/*"
     };
-
-    /*@Bean
-    public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
-        UserDetails user =
-                User.builder()
-                        .username("user@gmail.com")
-                        .password("password")
-                        .passwordEncoder(passwordEncoder::encode)
-                        .roles(RoleDto.USER.name())
-                        .build();
-        return new InMemoryUserDetailsManager(user);
-    }*/
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -60,4 +50,17 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
+
+    /*@Bean
+    public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
+        UserDetails user =
+                User.builder()
+                        .username("user@gmail.com")
+                        .password("password")
+                        .passwordEncoder(passwordEncoder::encode)
+                        .roles(RoleDto.USER.name())
+                        .build();
+        return new InMemoryUserDetailsManager(user);
+    }*/
 }

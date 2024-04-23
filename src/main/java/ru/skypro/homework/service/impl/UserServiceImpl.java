@@ -19,6 +19,7 @@ import ru.skypro.homework.service.mappers.UserMapper;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -61,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public byte[] getImage(Integer id) {
-        return userRepository.findById(id).get().getImages().getData();
+        return userRepository.findById(id).map(User::getImages).map(Image::getData).orElse(null);
     }
 
     @Override
@@ -79,7 +80,8 @@ public class UserServiceImpl implements UserService {
         ) {
             bis.transferTo(bos);
         }
-        Image image = imageRepository.findById(users.getId()).orElseGet(Image::new);
+
+        Image image = Optional.ofNullable(users.getImages()).orElseGet(Image::new);
         image.setFileSize(file.getSize());
         image.setMediaType(file.getContentType());
         image.setData(file.getBytes());

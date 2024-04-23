@@ -75,7 +75,7 @@ public class AdServiceImpl implements AdService {
         ) {
             bis.transferTo(bos);
         }
-        Image image = imageRepository.findById(ad.getId()).orElseGet(Image::new);
+        Image image = new Image();
         image.setFileSize(file.getSize());
         image.setMediaType(file.getContentType());
         image.setData(file.getBytes());
@@ -137,7 +137,7 @@ public class AdServiceImpl implements AdService {
         ) {
             bis.transferTo(bos);
         }
-        Image image = imageRepository.findById(adId).orElseGet(Image::new);
+        Image image = ad.getImages();
         image.setFileSize(file.getSize());
         image.setMediaType(file.getContentType());
         image.setData(file.getBytes());
@@ -166,6 +166,6 @@ public class AdServiceImpl implements AdService {
     //находит картинку по идентификатору
     @Override
     public byte[] getImage(Integer id) throws IOException {
-        return adRepository.findAdByImages(id).getImages().getData();
+        return adRepository.findById(id).map(Ad::getImages).map(Image::getData).orElse(null);
     }
 }
