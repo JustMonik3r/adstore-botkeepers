@@ -10,6 +10,7 @@ import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
 import ru.skypro.homework.exceptions.UserIllegalArgumentException;
+import ru.skypro.homework.exceptions.UserNotFoundException;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(NewPasswordDto newPasswordDto, Authentication authentication) {
-        User user = userRepository.findById(newPasswordDto.getId()).get();
+        User user = getMe(authentication.getName());
         if(user.getPassword().equals(newPasswordDto.getCurrentPassword())) {
             user.setPassword(newPasswordDto.getNewPasswordDto());
             userRepository.save(user);
@@ -42,8 +43,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getMe(Authentication authentication) {
-        return userRepository.findByEmail(authentication.getName()).map(userMapper::userToUserDto).orElseThrow();
+    public User getMe(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException());
     }
 
     @Override
