@@ -1,7 +1,6 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,11 +16,8 @@ import ru.skypro.homework.service.UserService;
 import ru.skypro.homework.service.mappers.UserMapper;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Optional;
 
-import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 
 @RequiredArgsConstructor
@@ -69,17 +65,6 @@ public class UserServiceImpl implements UserService {
     public void updateImage(Authentication authentication, MultipartFile file) throws IOException {
 
         User users = userRepository.findByEmail(authentication.getName()).get();
-        Path filePath = Path.of("./image", authentication.getName());
-        Files.createDirectories(filePath.getParent());
-        Files.deleteIfExists(filePath);
-        try (
-                InputStream is = file.getInputStream();
-                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-                BufferedInputStream bis = new BufferedInputStream(is, 1024);
-                BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
-        ) {
-            bis.transferTo(bos);
-        }
 
         Image image = Optional.ofNullable(users.getImages()).orElseGet(Image::new);
         image.setFileSize(file.getSize());

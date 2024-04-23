@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
-import ru.skypro.homework.service.AuthService;
 import ru.skypro.homework.service.UserService;
 
 import java.io.IOException;

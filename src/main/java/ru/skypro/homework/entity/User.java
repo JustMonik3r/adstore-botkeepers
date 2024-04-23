@@ -25,8 +25,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private RoleDto role;
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
-//    private Avatar avatar;
     @Column(name = "password")
     private String password;
     @OneToOne

@@ -1,10 +1,8 @@
 package ru.skypro.homework.entity;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 import javax.persistence.*;
 import java.util.List;
@@ -33,9 +31,6 @@ public class Ad {
 
     @Column(name = "price")
     private Integer price;
-
-//    @Column(name = "image")
-//    private String imageUrl;
 
     @Column(name = "title")
     private String title;
