@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.CommentDto;
@@ -18,7 +17,6 @@ import ru.skypro.homework.service.CommentService;
 
 import java.util.Optional;
 
-
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -28,7 +26,6 @@ import java.util.Optional;
 public class CommentController {
     private final CommentService commentService;
     private final AdService adService;
-
 
     @Operation(summary = "Получение комментариев объявления")
     @GetMapping("/{id}/comments")
@@ -40,7 +37,6 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
 
-
     @Operation(summary = "Добавление комментария к объявлению")
     @PostMapping("/{id}/comments")
     public ResponseEntity<CommentDto> addComment(@PathVariable("id") Integer id,
@@ -49,7 +45,6 @@ public class CommentController {
         CommentDto commentDto = commentService.createComment(id, createCommentDto, authentication);
         return ResponseEntity.ok(commentDto);
     }
-
 
    // @PreAuthorize("hasROLE('ADMIN')")
     @Operation(summary = "Удаление комментария")

@@ -1,6 +1,5 @@
 package ru.skypro.homework.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,11 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.Ad;
-import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.service.AdService;
 import ru.skypro.homework.service.CommentService;
-import ru.skypro.homework.service.impl.AdServiceImpl;
-import ru.skypro.homework.service.impl.CommentServiceImpl;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -28,7 +24,6 @@ import java.util.Optional;
 @RequestMapping("/ads")
 public class AdController {
     private final AdService adService;
-    private final CommentService commentService;
 
     @GetMapping
     public ResponseEntity<AdsDto> getAllAds() {

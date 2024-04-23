@@ -19,17 +19,12 @@ import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdService;
-import ru.skypro.homework.service.UserService;
 import ru.skypro.homework.service.mappers.AdMapper;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 @RequiredArgsConstructor
@@ -65,16 +60,6 @@ public class AdServiceImpl implements AdService {
         ad.setUsers(user);
         adRepository.save(ad);
 
-        Path filePath = Path.of("./image",  "." + getExtension(file.getOriginalFilename()));
-        Files.createDirectories(filePath.getParent());
-        Files.deleteIfExists(filePath);
-        try (InputStream is = file.getInputStream();
-             OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-             BufferedInputStream bis = new BufferedInputStream(is, 1024);
-             BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
-        ) {
-            bis.transferTo(bos);
-        }
         Image image = new Image();
         image.setFileSize(file.getSize());
         image.setMediaType(file.getContentType());
@@ -84,8 +69,6 @@ public class AdServiceImpl implements AdService {
         ad.setImages(image);
         adRepository.save(ad);
         return adMapper.updateAdToDto(ad);
-
-
     }
 
     //Получение информации об объявлении
@@ -112,31 +95,13 @@ public class AdServiceImpl implements AdService {
     public AdsDto getMyAds(Authentication authentication) {
         User userEntity = userRepository.findByEmail(authentication.getName()).get();
         List<AdDto> collect = userEntity.getAdEntityList().stream().map(adMapper::adsToDto).collect(Collectors.toList());
-        //List<AdDto> collect = adRepository.findByUsersId(userEntity.getId()).stream().map(e ->  {
-            /*AdDto adDto = new AdDto();
-            adDto.setAuthor(e.getUsers().getId());
-            adDto.setPk(e.getId());
-            adDto.setImage("http://localhost:3000/ads/" + e.getId() + "/image");
-            adDto.setTitle(e.getTitle());
-            adDto.setPrice(e.getPrice());
-            return adDto;*/
-       // }).collect(Collectors.toList());
         return new AdsDto(collect.size(),collect);
     }
 
     //     Обновление картинки объявления
     public void updateImage(Integer adId, MultipartFile file) throws IOException {
         Ad ad = findAd(adId);
-        Path filePath = Path.of("./image", adId + "." + getExtension(file.getOriginalFilename()));
-        Files.createDirectories(filePath.getParent());
-        Files.deleteIfExists(filePath);
-        try (InputStream is = file.getInputStream();
-             OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-             BufferedInputStream bis = new BufferedInputStream(is, 1024);
-             BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
-        ) {
-            bis.transferTo(bos);
-        }
+
         Image image = ad.getImages();
         image.setFileSize(file.getSize());
         image.setMediaType(file.getContentType());
@@ -145,12 +110,6 @@ public class AdServiceImpl implements AdService {
 
         ad.setImages(image);
         adRepository.save(ad);
-    }
-
-
-    //имя файла расширяется
-    private String getExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
     //находит объявление по идентификатору
