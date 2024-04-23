@@ -29,7 +29,6 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
     private final AdRepository adRepository;
-    private final AdService adService;
     private final UserRepository userRepository;
     private final LocalDateTime today = LocalDateTime.now();
     DateTimeFormatter dateAndTime = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
@@ -41,7 +40,7 @@ public class CommentServiceImpl implements CommentService {
      */
     public CommentsDto getComments(Integer id) {
         List<Comment> comments = adRepository.findById(id).orElseThrow().getComments();
-        List<CommentDto> collect = comments.stream().map(e -> commentMapper.commentsToDto(e)).collect(Collectors.toList());
+        List<CommentDto> collect = comments.stream().map(commentMapper::commentsToDto).collect(Collectors.toList());
         return new CommentsDto(collect.size(), collect);
     }
 
@@ -50,7 +49,7 @@ public class CommentServiceImpl implements CommentService {
         Ad ad = adRepository.findById(id).orElseThrow();
         Comment comment = new Comment();
         comment.setAuthor(user);
-        comment.setCreateAt(LocalDateTime.parse(today.format(dateAndTime)));
+        comment.setCreateAt(LocalDateTime.parse(LocalDateTime.now().format(dateAndTime)));
         comment.setAds(ad);
         comment.setText(createCommentDto.getText());
         commentRepository.save(comment);
