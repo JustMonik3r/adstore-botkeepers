@@ -53,7 +53,7 @@ public class CommentController {
                                                     @PathVariable Integer commentId,
                                                     Authentication authentication) {
         Optional<Ad> ad = adService.findOne(adId);
-        if (ad == null) {
+        if (ad.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         commentService.deleteComment(adId, commentId, authentication);

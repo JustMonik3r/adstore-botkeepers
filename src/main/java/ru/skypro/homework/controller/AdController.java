@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.service.AdService;
-import ru.skypro.homework.service.CommentService;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -50,7 +49,7 @@ public class AdController {
     @DeleteMapping("{id}")
     public ResponseEntity<AdDto> deleteAdById(@PathVariable Integer id) {
         Optional<Ad> ad = adService.findOne(id);
-        if (ad == null) {
+        if (ad.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         adService.deleteAdById(id);
@@ -76,7 +75,7 @@ public class AdController {
     public ResponseEntity<Ad> updateImage(@PathVariable Integer id, @RequestParam MultipartFile image) throws
             IOException {
         Optional<Ad> adEntity = adService.findOne(id);
-        if (adEntity == null) {
+        if (adEntity.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         adService.updateImage(id, image);

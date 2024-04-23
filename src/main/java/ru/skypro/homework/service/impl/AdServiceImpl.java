@@ -124,7 +124,7 @@ public class AdServiceImpl implements AdService {
 
     //находит картинку по идентификатору
     @Override
-    public byte[] getImage(Integer id) throws IOException {
+    public byte[] getImage(Integer id) {
         return adRepository.findById(id).map(Ad::getImages).map(Image::getData).orElse(null);
     }
 }
