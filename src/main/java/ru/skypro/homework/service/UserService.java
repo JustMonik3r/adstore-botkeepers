@@ -14,7 +14,7 @@ public interface UserService {
 
     void changePassword(NewPasswordDto newPasswordDto, Authentication authentication);
 
-    User getMe(String email);
+    UserDto getMe(Authentication authentication);
 
     UpdateUserDto updateUser(UpdateUserDto updateUserDto, Authentication authentication);
 
