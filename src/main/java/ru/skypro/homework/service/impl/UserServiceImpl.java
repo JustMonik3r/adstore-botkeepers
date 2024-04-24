@@ -9,7 +9,8 @@ import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
-import ru.skypro.homework.exceptions.UserIllegalArgumentException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.skypro.homework.exceptions.UserNotFoundException;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
@@ -27,23 +28,21 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final ImageRepository imageRepository;
+    private final PasswordEncoder encoder;
 
 
 
     @Override
-    public void changePassword(NewPasswordDto newPasswordDto, Authentication authentication) {
-        User user = userRepository.findById(newPasswordDto.getId()).get();
-        if(user.getPassword().equals(newPasswordDto.getCurrentPassword())) {
-            user.setPassword(newPasswordDto.getNewPasswordDto());
-            userRepository.save(user);
-        } else {
-            throw new UserIllegalArgumentException("Пользователь вводит неверный текущий пароль");
-        }
+    public void changePassword(NewPasswordDto newPassword, Authentication authentication) {
+        User user = getMe(authentication.getName());
+        User infoToUpdate = userMapper.updateNewPasswordDtoToUser(newPassword);
+        user.setPassword(encoder.encode(infoToUpdate.getPassword()));
+        userRepository.save(user);
     }
 
     @Override
-    public UserDto getMe(Authentication authentication) {
-        return userRepository.findByEmail(authentication.getName()).map(userMapper::userToUserDto).orElseThrow();
+    public User getMe(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException());
     }
 
     @Override

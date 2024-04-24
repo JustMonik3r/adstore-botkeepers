@@ -11,8 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.entity.User;
 import ru.skypro.homework.service.UserService;
 
+import javax.validation.Valid;
 import java.io.IOException;
 
 
@@ -26,14 +28,14 @@ public class UserController {
 
 
     @PostMapping("/set_password")
-    public ResponseEntity<Void> setPassword(@RequestBody NewPasswordDto newPasswordDto, Authentication authentication) {
+    public ResponseEntity<Void> setPassword(@Valid @RequestBody NewPasswordDto newPasswordDto, Authentication authentication) {
         userService.changePassword(newPasswordDto,authentication);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDto> getMe(Authentication authentication) {
-        UserDto user = userService.getMe(authentication);
+    public ResponseEntity<User> getMe(String email) {
+        User user = userService.getMe(email);
         return ResponseEntity.ok(user);
     }
 
