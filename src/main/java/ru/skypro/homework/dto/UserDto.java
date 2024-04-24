@@ -14,4 +14,11 @@ public class UserDto {
     @Enumerated(EnumType.STRING)
     private RoleDto role;
     private String image;
+
+    public UserDto(Long id, String email) {
+        this.id = id;
+        this.email = email;
+    }
+    public UserDto(){}
+
 }

@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
     public void updateImage(Authentication authentication, MultipartFile file) throws IOException {
 
         User users = userRepository.findByEmail(authentication.getName()).get();
-
+        //Optional<User> users = userRepository.findByEmail(authentication.getName()).get();
         Image image = Optional.ofNullable(users.getImages()).orElseGet(Image::new);
         image.setFileSize(file.getSize());
         image.setMediaType(file.getContentType());
