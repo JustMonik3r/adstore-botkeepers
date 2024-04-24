@@ -34,15 +34,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(NewPasswordDto newPassword, Authentication authentication) {
-        User user = getMe(authentication.getName());
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
         User infoToUpdate = userMapper.updateNewPasswordDtoToUser(newPassword);
         user.setPassword(encoder.encode(infoToUpdate.getPassword()));
         userRepository.save(user);
     }
 
     @Override
-    public User getMe(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException());
+    public UserDto getMe(Authentication authentication) {
+        return userRepository.findByEmail(authentication.getName()).map(userMapper::userToUserDto).orElseThrow();
     }
 
     @Override

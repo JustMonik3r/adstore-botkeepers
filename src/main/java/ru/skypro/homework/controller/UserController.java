@@ -34,8 +34,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<User> getMe(String email) {
-        User user = userService.getMe(email);
+    public ResponseEntity<UserDto> getMe(Authentication authentication) {
+        UserDto user = userService.getMe(authentication);
         return ResponseEntity.ok(user);
     }
 
