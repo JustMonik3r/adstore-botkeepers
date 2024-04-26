@@ -19,6 +19,12 @@ public class AuthServiceImpl implements AuthService {
         this.encoder = passwordEncoder;
     }
 
+    /**
+     * Attempts to authenticate a user by verifying the provided username and password
+     * @param userName the username of the user
+     * @param password the password of the user
+     * @return true if the authentication is successful, false otherwise
+     */
     @Override
     public boolean login(String userName, String password) {
         if (!manager.userExists(userName )) {
@@ -29,6 +35,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
 
+    /**
+     * Registers a new user with the system
+     * @param register the registration details of the user
+     * @return rue if the registration is successful, false if a user with the same username already exists
+     */
     @Override
     public boolean register(RegisterDto register) {
         if (manager.userExists(register.getUsername())) {

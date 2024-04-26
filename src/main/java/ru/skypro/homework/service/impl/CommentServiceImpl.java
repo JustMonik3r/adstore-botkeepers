@@ -34,9 +34,9 @@ public class CommentServiceImpl implements CommentService {
     DateTimeFormatter dateAndTime = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
     /**
-     * Получает комментарии к объявлению.
-     //* @param id - id of the ad
-     * @return Объект CommentsDto, содержащий список комментариев.
+     * Retrieves the comments for an ad
+     * @param id - id of the ad
+     * @return The CommentsDto object containing the list of comments
      */
     public CommentsDto getComments(Integer id) {
         List<Comment> comments = adRepository.findById(id).orElseThrow().getComments();
@@ -44,6 +44,13 @@ public class CommentServiceImpl implements CommentService {
         return new CommentsDto(collect.size(), collect);
     }
 
+    /**
+     * Creates a new comment for an ad.
+     * @param id - id of the ad.
+     * @param createCommentDto - the CreateOrUpdateCommentDto object containing the comment details
+     * @param authentication - the authentication object representing the current user
+     * @return the CommentDto object representing the created comment
+     */
     public CommentDto createComment(Integer id, CreateOrUpdateCommentDto createCommentDto, Authentication authentication){
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
         Ad ad = adRepository.findById(id).orElseThrow();
@@ -56,11 +63,25 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.commentsToDto(comment);
     }
 
+    /**
+     * Deletes a comment
+     * @param adId - id of the ad.
+     * @param commentId - id of the comment
+     * @param authentication - the authentication object representing the current user
+     */
     public void deleteComment(Integer adId, Integer commentId, Authentication authentication) {
         Comment comment = commentRepository.findByIdAndAdsId(commentId, adId).orElseThrow();
         commentRepository.delete(comment);
     }
 
+    /**
+     * Updates a comment
+     * @param adId - id of the ad
+     * @param commentId - id of the comment
+     * @param updateCommentDto - the CreateOrUpdateCommentDto object containing the updated comment details
+     * @param authentication - - the authentication object representing the current user
+     * @return the CreateOrUpdateCommentDto object representing the updated comment.
+     */
     public CreateOrUpdateCommentDto updateComment (Integer adId, Integer commentId,CreateOrUpdateCommentDto updateCommentDto, Authentication authentication){
         Comment comment = commentRepository.findByIdAndAdsId(commentId, adId).orElseThrow();
         comment.setText(updateCommentDto.getText());

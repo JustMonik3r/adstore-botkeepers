@@ -44,13 +44,23 @@ public class AdServiceImpl implements AdService {
         return ((UserDetails) authentication.getPrincipal()).getUsername();
     }
 
-    //Получение всех объявлений
+    /**
+     * Retrieves all ads.
+     * @return The DTO containing the list of all ads
+     */
     public AdsDto getAllAds() {
         List<AdDto> collect = adRepository.findAll().stream().map(adMapper::adsToDto).collect(Collectors.toList());
         return new AdsDto(collect.size(), collect);
     }
 
-    //    Добавление объявления
+    /**
+     * Creates a new ad
+     * @param authentication The authentication information of the user creating the ad
+     * @param createAd The DTO containing the ad data
+     * @param file The image file associated with the ad
+     * @return The DTO representing the created ad
+     * @throws IOException IOException If an error occurs while reading the image file.
+     */
     public CreateOrUpdateAdDto createAd(Authentication authentication, CreateOrUpdateAdDto createAd, MultipartFile file) throws IOException {
         User user = userRepository.findByEmail(authentication.getName()).get();
         Ad ad = new Ad();
@@ -71,17 +81,29 @@ public class AdServiceImpl implements AdService {
         return adMapper.updateAdToDto(ad);
     }
 
-    //Получение информации об объявлении
+    /**
+     * Retrieves an extended version of an ad
+     * @param id - The ID of the ad to retrieve
+     * @return - The DTO representing the extended ad
+     */
     public ExtendedAdDto getAdById(Integer id) {
         return adRepository.findById(id).map(adMapper::extendAdToDto).orElse(null);
     }
 
-    //Удаление объявления
+    /**
+     * Deletes an ad
+     * @param id - The ID of the ad to delete
+     */
     public void deleteAdById(Integer id) {
         adRepository.deleteById(id);
     }
 
-    //Обновление информации об объявлении
+    /**
+     * Updates or creates the details of an ad
+     * @param id - The ID of the ad to update
+     * @param updateAd - The DTO containing the updated ad data
+     * @return The DTO representing the updated ad
+     */
     public CreateOrUpdateAdDto updateAdById(Integer id, CreateOrUpdateAdDto updateAd) {
         Ad adEntity = adRepository.findById(id).get();
         adEntity.setTitle(updateAd.getTitle());
@@ -91,14 +113,23 @@ public class AdServiceImpl implements AdService {
         return adMapper.updateAdToDto(adEntity);
     }
 
-    //Получение объявлений авторизованного пользователь
+    /**
+     * Retrieves all ads created by the authenticated user
+     * @param authentication The authentication information of the user
+     * @return The DTO containing the list of all ads created by the user
+     */
     public AdsDto getMyAds(Authentication authentication) {
         User userEntity = userRepository.findByEmail(authentication.getName()).get();
         List<AdDto> collect = userEntity.getAdEntityList().stream().map(adMapper::adsToDto).collect(Collectors.toList());
         return new AdsDto(collect.size(),collect);
     }
 
-    //     Обновление картинки объявления
+    /**
+     * Updates the image of an ad.
+     * @param adId - The ID of the ad to update
+     * @param file - The new image file for the ad
+     * @throws IOException If an error occurs while reading the image file
+     */
     public void updateImage(Integer adId, MultipartFile file) throws IOException {
         Ad ad = findAd(adId);
 
@@ -112,17 +143,29 @@ public class AdServiceImpl implements AdService {
         adRepository.save(ad);
     }
 
-    //находит объявление по идентификатору
+    /**
+     * Retrieves ad by id
+     * @param id - The ID of the ad to retrieve
+     * @return Optional<Ad> containing the ad
+     */
     public Optional<Ad> findOne(Integer id) {
         return adRepository.findById(id);
     }
 
-    //находит объявление по идентификатору
+    /**
+     * Retrieves ad by id
+     * @param id - The ID of the ad to retrieve
+     * @return The object containing the ad
+     */
     public Ad findAd(Integer id) {
         return adRepository.findById(id).get();
     }
 
-    //находит картинку по идентификатору
+    /**
+     * Retrieves the image data for an ad
+     * @param id - The ID of the ad image to retrieve
+     * @return The byte array representing the image data
+     */
     @Override
     public byte[] getImage(Integer id) {
         return adRepository.findById(id).map(Ad::getImages).map(Image::getData).orElse(null);

@@ -19,7 +19,7 @@ import ru.skypro.homework.service.CommentService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/ads")
-@Tag( name = "Комментарии")
+@Tag(name = "Комментарии")
 public class CommentController {
     private final CommentService commentService;
     private final AdService adService;
@@ -43,7 +43,7 @@ public class CommentController {
         return ResponseEntity.ok(commentDto);
     }
 
-   // @PreAuthorize("hasROLE('ADMIN')")
+
     @Operation(summary = "Удаление комментария")
     @DeleteMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<CommentDto> deleteComment(@PathVariable Integer adId,

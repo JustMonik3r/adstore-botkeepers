@@ -31,7 +31,11 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder encoder;
 
 
-
+    /**
+     * Sets the password for the user
+     * @param newPassword The new password to be set
+     * @param authentication The authentication object representing the current user
+     */
     @Override
     public void changePassword(NewPasswordDto newPassword, Authentication authentication) {
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
@@ -40,11 +44,22 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Retrieves the UserDto object representing the logged-in user
+     * @param authentication The authentication object representing the current user
+     * @return The UserDto object representing the logged-in user
+     */
     @Override
     public UserDto getMe(Authentication authentication) {
         return userRepository.findByEmail(authentication.getName()).map(userMapper::userToUserDto).orElseThrow();
     }
 
+    /**
+     * Updates the user information
+     * @param updateUserDto The UpdateUserDto object containing the updated user information
+     * @param authentication The authentication object representing the current user
+     * @return The UpdateUserDto object representing the updated user information
+     */
     @Override
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto, Authentication authentication) {
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
@@ -55,11 +70,22 @@ public class UserServiceImpl implements UserService {
         return userMapper.updateUserToDto(user);
     }
 
+    /**
+     * Retrieves the image data of the user
+     * @param id - The ID of the user
+     * @return The byte array representing the image data
+     */
     @Override
     public byte[] getImage(Integer id) {
         return userRepository.findById(id).map(User::getImages).map(Image::getData).orElse(null);
     }
 
+    /**
+     * Updates the user avatar
+     * @param authentication The authentication object representing the current user
+     * @param file The MultipartFile object representing the new user avatar image
+     * @throws IOException error occurs while reading the image data
+     */
     @Override
     public void updateImage(Authentication authentication, MultipartFile file) throws IOException {
 
