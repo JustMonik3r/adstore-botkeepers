@@ -14,7 +14,6 @@ import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.service.AdService;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -48,8 +47,6 @@ public class AdController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<AdDto> deleteAdById(@PathVariable Integer id) {
-
-        //Optional<Ad> ad = adService.findOne(id);
         if (adService.getAdById(id) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -75,8 +72,7 @@ public class AdController {
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Ad> updateImage(@PathVariable Integer id, @RequestParam MultipartFile image) throws
             IOException {
-        Optional<Ad> adEntity = adService.findOne(id);
-        if (adEntity.isEmpty()) {
+        if (adService.findOne(id).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         adService.updateImage(id, image);

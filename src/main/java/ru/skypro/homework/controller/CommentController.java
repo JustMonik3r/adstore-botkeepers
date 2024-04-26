@@ -11,11 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
-import ru.skypro.homework.entity.Ad;
 import ru.skypro.homework.service.AdService;
 import ru.skypro.homework.service.CommentService;
-
-import java.util.Optional;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -52,8 +49,7 @@ public class CommentController {
     public ResponseEntity<CommentDto> deleteComment(@PathVariable Integer adId,
                                                     @PathVariable Integer commentId,
                                                     Authentication authentication) {
-        Optional<Ad> ad = adService.findOne(adId);
-        if (ad.isEmpty()) {
+        if (adService.findOne(adId).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         commentService.deleteComment(adId, commentId, authentication);
