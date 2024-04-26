@@ -22,7 +22,7 @@ public class Ad {
     @JoinColumn(name = "users_id")
     private User users;
 
-    @OneToMany(mappedBy = "ads")
+    @OneToMany(mappedBy = "ads", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @OneToOne
