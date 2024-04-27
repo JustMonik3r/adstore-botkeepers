@@ -10,7 +10,6 @@ import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.skypro.homework.exceptions.UserNotFoundException;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;

@@ -1,9 +1,11 @@
 package ru.skypro.homework.service.impl;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import ru.skypro.homework.dto.CommentDto;
@@ -17,7 +19,6 @@ import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.mappers.CommentMapper;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,9 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
-
-import static org.junit.jupiter.api.Assertions.*;
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class CommentServiceImplTest {
     @Mock
     private CommentRepository commentRepository;
@@ -87,10 +86,11 @@ class CommentServiceImplTest {
 
         // Assert
         assertEquals(2, commentsDto.getCount());
-//        assertEquals("Comment 1", commentsDto.getResults().
-//        assertEquals("Comment 2", commentsDto.getCount().getClass(1).getText());
+        assertEquals("Comment 1", commentsDto.getResults().get(0).getText());
+        assertEquals("Comment 2", commentsDto.getResults().get(1).getText());
     }
 
+    // Тест проверяет корректность создания комментария через сервис commentService.
     @Test
     public void testCreateComment() {
         // Given
@@ -119,6 +119,8 @@ class CommentServiceImplTest {
         assertEquals(savedComment.getText(), result.getText());
     }
 
+    // Тест проверяет корректность удаления комментария через сервис commentService.
+
     @Test
     public void testDeleteComment() {
         // Given
@@ -127,7 +129,6 @@ class CommentServiceImplTest {
 
         Ad ad = new Ad();
         ad.setId(adId);
-        when(adRepository.findById(anyInt())).thenReturn(java.util.Optional.of(ad));
 
         Comment comment = new Comment();
         comment.setId(commentId);
@@ -141,6 +142,7 @@ class CommentServiceImplTest {
         Mockito.verify(commentRepository, Mockito.times(1)).delete(comment);
     }
 
+    // Тест проверяет корректность обновления текста комментария через сервис commentService.
     @Test
     public void testUpdateComment() {
         // Given
@@ -152,7 +154,6 @@ class CommentServiceImplTest {
 
         Ad ad = new Ad();
         ad.setId(adId);
-        when(adRepository.findById(anyInt())).thenReturn(Optional.of(ad));
 
         Comment comment = new Comment();
         comment.setId(commentId);

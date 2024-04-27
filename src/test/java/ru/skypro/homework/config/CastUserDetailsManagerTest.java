@@ -2,37 +2,32 @@ package ru.skypro.homework.config;
 
 import org.junit.jupiter.api.Test;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import ru.skypro.homework.dto.RegisterDto;
 import ru.skypro.homework.dto.RoleDto;
 import ru.skypro.homework.entity.User;
 import ru.skypro.homework.repository.UserRepository;
-import ru.skypro.homework.service.mappers.UserMapper;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-//@ExtendWith(MockitoExtension.class)
-@SpringBootTest
+
+@ExtendWith(MockitoExtension.class)
 class CastUserDetailsManagerTest {
     @InjectMocks
     private CastUserDetailsManager castUserDetailsManager;
     @Mock
     private UserRepository userRepository;
-    @Mock
-    private UserMapper userMapper;
 
-    //Тест проверяет создание пользователя и обработка нулевого значения RegisterDto.
+
+    //Тест проверяет создание пользователя
     @Test
     void createUser_Success() {
         // Arrange
@@ -45,26 +40,12 @@ class CastUserDetailsManagerTest {
         registerDto.setPhone("79905678900");
         registerDto.setRole(RoleDto.valueOf("USER"));
 
-
         // Act
         userDetailsManager.createUser(registerDto);
 
         // Assert
         verify(userRepository).save(Mockito.any(User.class));
     }
-
-
-    // обработка нулевого значения RegisterDto.
-//        @Test
-//    void createUser_NullRegisterDto() {
-//        // Arrange
-//        CastUserDetailsManager userDetailsManager = new CastUserDetailsManager(userRepository);
-//
-//        // Act & Assert
-//        assertThrows(IllegalArgumentException.class, () -> userDetailsManager.createUser(null));
-//    }
-
-
 
 
     //  В этом тесте мы используем Mockito для мокирования UserRepository
@@ -99,15 +80,4 @@ class CastUserDetailsManagerTest {
         assertEquals(user.getEmail(), userDetails.getUsername());
     }
 
-
-//    // обработка случая, когда пользователь не найден
-//        @Test
-//    void loadUserByUsername_UserNotFound() {
-//        // Arrange
-//        CastUserDetailsManager userDetailsManager = new CastUserDetailsManager(userRepository);
-//        Mockito.when(userRepository.findByEmail("nonexistent@gmail.com")).thenReturn(null);
-//
-//        // Act & Assert
-//        assertThrows(UsernameNotFoundException.class, () -> userDetailsManager.loadUserByUsername("nonexistent@gmail.com"));
-//    }
 }

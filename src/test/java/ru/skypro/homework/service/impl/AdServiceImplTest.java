@@ -3,31 +3,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.AdsDto;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.entity.Ad;
-import ru.skypro.homework.entity.Comment;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.entity.User;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
-import ru.skypro.homework.service.impl.AdServiceImpl;
 import ru.skypro.homework.service.mappers.AdMapper;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,9 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-//@ExtendWith(MockitoExtension.class)
-//@RunWith(MockitoJUnitRunner.class)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class AdServiceImplTest {
 
     @Mock
@@ -57,6 +47,7 @@ class AdServiceImplTest {
 
 
 
+
     @Test
     void testGetAllAds() {
         // Arrange
@@ -69,18 +60,29 @@ class AdServiceImplTest {
         ad2.setId(2);
         ad2.setTitle("Ad 2");
 
+        AdDto adDto1 = new AdDto();
+        adDto1.setAuthor(1);
+        adDto1.setTitle("Ad 1");
+
+        AdDto adDto2 = new AdDto();
+        adDto2.setAuthor(2);
+        adDto2.setTitle("Ad 2");
+
         List<Ad> ads = Arrays.asList(ad1, ad2);
 
         when(adRepository.findAll()).thenReturn(ads);
+        when(adMapper.adsToDto(ad1)).thenReturn(adDto1);
+        when(adMapper.adsToDto(ad2)).thenReturn(adDto2);
 
         // Act
         AdsDto result = adService.getAllAds();
 
         // Assert
+        AdDto[] ads1 = result.getResults().toArray(new AdDto[0]);
         assertEquals(2, result.getCount());
         assertEquals(2, result.getResults().size());
-//        assertEquals("Ad 1", result.getAds().get(0).getTitle());
-//        assertEquals("Ad 2", result.getAds().get(1).getTitle());
+        assertEquals("Ad 1", ads1[0].getTitle());
+        assertEquals("Ad 2", ads1[1].getTitle());
     }
 
     //  В этом тесте мы мокируем зависимости AdRepository, AdMapper, ImageRepository и UserRepository,
@@ -142,8 +144,17 @@ class AdServiceImplTest {
         assertEquals(adId, result.getPk());
     }
 
+    // Тест проверяет вызов метода deleteById у adRepository с указанным аргументом.
     @Test
-    void deleteAdById() {
+    void testDeleteAdById() {
+        // Arrange
+        Integer adId = 1;
+
+        // Act
+        adService.deleteAdById(adId);
+
+        // Assert
+        verify(adRepository, times(1)).deleteById(adId);
     }
 
     @Test
