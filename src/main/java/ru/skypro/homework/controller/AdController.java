@@ -11,12 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.Ad;
-import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.AdService;
 
-
 import java.io.IOException;
-import java.util.Optional;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -25,7 +22,6 @@ import java.util.Optional;
 @RequestMapping("/ads")
 public class AdController {
     private final AdService adService;
-    private final CommentService commentService;
 
     @GetMapping
     public ResponseEntity<AdsDto> getAllAds() {
@@ -34,14 +30,14 @@ public class AdController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<CreateOrUpdateAdDto> addAd(Authentication authentication, @RequestPart(value = "properties", required = true) CreateOrUpdateAdDto properties,
+    ResponseEntity<CreateOrUpdateAdDto> createAd(Authentication authentication, @RequestPart(value = "properties", required = true) CreateOrUpdateAdDto properties,
                                            @RequestPart(value = "image", required = true) MultipartFile image) throws IOException {
-        CreateOrUpdateAdDto createAd = adService.createAd(authentication,properties, image);
+        CreateOrUpdateAdDto createAd = adService.createAd(authentication, properties, image);
         return ResponseEntity.ok(createAd);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ExtendedAdDto> getInfoExtendedAdById(@PathVariable Integer id) {
+    public ResponseEntity<ExtendedAdDto> getAdById(@PathVariable Integer id) {
         ExtendedAdDto extendedAd = adService.getAdById(id);
         if (extendedAd == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -51,8 +47,7 @@ public class AdController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<AdDto> deleteAdById(@PathVariable Integer id) {
-        ExtendedAdDto extendedAd = adService.getAdById(id);
-        if (extendedAd == null) {
+        if (adService.getAdById(id) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         adService.deleteAdById(id);
@@ -77,8 +72,7 @@ public class AdController {
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Ad> updateImage(@PathVariable Integer id, @RequestParam MultipartFile image) throws
             IOException {
-        Optional<Ad> adEntity = adService.findOne(id);
-        if (adEntity == null) {
+        if (adService.findOne(id).isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         adService.updateImage(id, image);

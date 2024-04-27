@@ -11,11 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
-import ru.skypro.homework.service.AuthService;
 import ru.skypro.homework.service.UserService;
 
+import javax.validation.Valid;
 import java.io.IOException;
-
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -25,9 +24,8 @@ import java.io.IOException;
 public class UserController {
     private final UserService userService;
 
-
     @PostMapping("/set_password")
-    public ResponseEntity<Void> setPassword(@RequestBody NewPasswordDto newPasswordDto, Authentication authentication) {
+    public ResponseEntity<Void> setPassword(@Valid @RequestBody NewPasswordDto newPasswordDto, Authentication authentication) {
         userService.changePassword(newPasswordDto,authentication);
         return ResponseEntity.ok().build();
     }

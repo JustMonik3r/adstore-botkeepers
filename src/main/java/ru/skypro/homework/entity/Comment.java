@@ -1,11 +1,13 @@
 package ru.skypro.homework.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -15,17 +17,23 @@ import java.sql.Timestamp;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
-    @Column(name = "created_at", nullable = false)
-    Timestamp createdAt;
-    @Column(name = "text", nullable = false)
+
+    @ManyToOne
+    @JoinColumn(name = "ads_id")
+    private Ad ads;
+
+    @ManyToOne
+    @JoinColumn(name = "users_id")
+    private User author;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @Column(name = "create_at")
+    private LocalDateTime createAt;
+
+    @Column(name = "text")
     private String text;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "author_id")
-    private User user;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ad_id")
-    private Ad ad;
 }

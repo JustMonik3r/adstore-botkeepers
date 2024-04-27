@@ -19,4 +19,6 @@ public interface UserService {
     UpdateUserDto updateUser(UpdateUserDto updateUserDto, Authentication authentication);
 
     void updateImage(Authentication authentication, MultipartFile file) throws IOException;
+
+    byte[] getImage(Integer id);
 }
