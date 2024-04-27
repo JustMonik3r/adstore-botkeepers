@@ -46,7 +46,7 @@ During development the following technologies were used:
     Swagger
     Mockito
 
-============================================================================================
+===========================================================================
 
 Дипломный проект по курсу java-разработчик IND.
 
@@ -94,3 +94,4 @@ During development the following technologies were used:
     Liquibase
     Swagger
     Mockito
+
